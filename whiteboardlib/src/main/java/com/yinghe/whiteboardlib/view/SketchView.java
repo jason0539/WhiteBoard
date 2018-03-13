@@ -51,7 +51,6 @@ import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import static com.yinghe.whiteboardlib.Utils.BitmapUtils.createBitmapThumbnail;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_CIRCLE;

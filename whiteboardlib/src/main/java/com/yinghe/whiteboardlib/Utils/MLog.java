@@ -1,4 +1,4 @@
-package com.yinghe.testwb.util;
+package com.yinghe.whiteboardlib.Utils;
 
 import android.util.Log;
 

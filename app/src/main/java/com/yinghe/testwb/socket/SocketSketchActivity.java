@@ -9,11 +9,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yinghe.testwb.R;
-import com.yinghe.testwb.util.MLog;
+import com.yinghe.whiteboardlib.Utils.MLog;
 import com.yinghe.testwb.util.UtilThread;
 import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
-
-import java.io.File;
 
 /**
  * Created by liuzhenhui on 2018/3/13.
