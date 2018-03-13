@@ -1,15 +1,13 @@
 package com.yinghe.testwb.socket;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yinghe.testwb.R;
@@ -23,7 +21,6 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
     public static final int PORT = 1234;
 
     private Button bnConnect;
-    private TextView txReceive;
     private EditText edIP, edData;
 
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -56,7 +53,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    txReceive.append(s);
+                    Log.e("SKETCH",s);
                 }
             });
         }
@@ -73,8 +70,6 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
 
         edIP = (EditText) this.findViewById(R.id.ed_ip);
         edData = (EditText) this.findViewById(R.id.ed_dat);
-        txReceive = (TextView) this.findViewById(R.id.tx_receive);
-        txReceive.setOnClickListener(this);
 
         refreshUI(false);
     }
@@ -93,9 +88,6 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.bn_send:
                 sendStr();
-                break;
-            case R.id.tx_receive:
-                clear();
                 break;
         }
     }
@@ -148,19 +140,5 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
                 }
             }
         });
-    }
-
-    /**
-     * 清空接收框
-     */
-    private void clear() {
-        new AlertDialog.Builder(this).setTitle("确认清除?")
-                .setNegativeButton("取消", null)
-                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        txReceive.setText("");
-                    }
-                }).show();
     }
 }

@@ -65,22 +65,4 @@
             android:textSize="30sp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="接收到的数据(点击可清除)："
-        android:textSize="20sp" />
-
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
-
-        <TextView
-            android:id="@+id/tx_receive"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
-
 </LinearLayout>
