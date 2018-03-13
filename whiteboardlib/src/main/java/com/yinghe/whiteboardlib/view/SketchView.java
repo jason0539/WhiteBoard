@@ -334,9 +334,8 @@ public class SketchView extends View implements OnTouchListener {
             //节省性能把10笔以前的全都画(保存)进固化层(tempHoldBitmap),移除record历史
             //从而每次10笔以前的一次性从tempHoldBitmap绘制过来，其他重绘最多10笔，
             while (curSketchData.strokeRecordList.size() > 10) {
-                StrokeRecord record = curSketchData.strokeRecordList.get(0);
+                StrokeRecord record = curSketchData.strokeRecordList.remove(0);
                 drawRecordToCanvas(tempHoldCanvas,record);
-                curSketchData.strokeRecordList.remove(0);
             }
             clearCanvas(tempCanvas);//清空画布
             tempCanvas.drawColor(Color.TRANSPARENT);
