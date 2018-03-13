@@ -12,7 +12,8 @@ public class MLog {
     private static boolean DEBUG = true;
 
     public static final String TAG_SOCKET = "TAG_SOCKET";
-    public static final String TAG_SKETCH = "TAG_SKETCH";
+    public static final String TAG_DRAW = "TAG_DRAW";
+    public static final String TAG_TOUCH = "TAG_TOUCH";
 
     private static boolean isDebug() {
         return DEBUG;
