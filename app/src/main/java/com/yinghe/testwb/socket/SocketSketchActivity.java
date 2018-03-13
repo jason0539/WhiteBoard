@@ -3,15 +3,17 @@ package com.yinghe.testwb.socket;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yinghe.testwb.R;
+import com.yinghe.testwb.util.MLog;
 import com.yinghe.testwb.util.UtilThread;
 import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
+
+import java.io.File;
 
 /**
  * Created by liuzhenhui on 2018/3/13.
@@ -51,7 +53,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
             UtilThread.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("SKETCH",s);
+                    MLog.d(MLog.TAG_SOCKET,"SocketSketchActivity->run " + s);
                 }
             });
         }
