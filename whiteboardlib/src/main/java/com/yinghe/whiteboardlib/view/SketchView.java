@@ -331,55 +331,41 @@ public class SketchView extends View implements OnTouchListener {
                 tempHoldBitmap = Bitmap.createBitmap(getWidth() / drawDensity, getHeight() / drawDensity, Bitmap.Config.ARGB_4444);
                 tempHoldCanvas = new Canvas(tempHoldBitmap);
             }
-//            Canvas tempCanvas = new Canvas(tempBitmap);
-            //把十个操作以前的笔画全都画进固化层
+            //节省性能把10笔以前的全都画(保存)进固化层(tempHoldBitmap),移除record历史
+            //从而每次10笔以前的一次性从tempHoldBitmap绘制过来，其他重绘最多10笔，
             while (curSketchData.strokeRecordList.size() > 10) {
                 StrokeRecord record = curSketchData.strokeRecordList.get(0);
-                int type = record.type;
-                if (type == StrokeRecord.STROKE_TYPE_ERASER) {//橡皮擦需要在固化层也绘制
-                    tempHoldCanvas.drawPath(record.path, record.paint);
-                } else if (type == StrokeRecord.STROKE_TYPE_DRAW || type == StrokeRecord.STROKE_TYPE_LINE) {
-                    tempHoldCanvas.drawPath(record.path, record.paint);
-                } else if (type == STROKE_TYPE_CIRCLE) {
-                    tempHoldCanvas.drawOval(record.rect, record.paint);
-                } else if (type == STROKE_TYPE_RECTANGLE) {
-                    tempHoldCanvas.drawRect(record.rect, record.paint);
-                } else if (type == STROKE_TYPE_TEXT) {
-                    if (record.text != null) {
-                        StaticLayout layout = new StaticLayout(record.text, record.textPaint, record.textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
-                        tempHoldCanvas.translate(record.textOffX, record.textOffY);
-                        layout.draw(tempHoldCanvas);
-                        tempHoldCanvas.translate(-record.textOffX, -record.textOffY);
-                    }
-                }
+                drawRecordToCanvas(tempHoldCanvas,record);
                 curSketchData.strokeRecordList.remove(0);
             }
             clearCanvas(tempCanvas);//清空画布
             tempCanvas.drawColor(Color.TRANSPARENT);
             tempCanvas.drawBitmap(tempHoldBitmap, new Rect(0, 0, tempHoldBitmap.getWidth(), tempHoldBitmap.getHeight()), new Rect(0, 0, tempCanvas.getWidth(), tempCanvas.getHeight()), null);
             for (StrokeRecord record : curSketchData.strokeRecordList) {
-                int type = record.type;
-                if (type == StrokeRecord.STROKE_TYPE_ERASER) {//橡皮擦需要在固化层也绘制
-                    tempCanvas.drawPath(record.path, record.paint);
-                    tempHoldCanvas.drawPath(record.path, record.paint);
-                } else if (type == StrokeRecord.STROKE_TYPE_DRAW || type == StrokeRecord.STROKE_TYPE_LINE) {
-                    tempCanvas.drawPath(record.path, record.paint);
-                } else if (type == STROKE_TYPE_CIRCLE) {
-                    tempCanvas.drawOval(record.rect, record.paint);
-                } else if (type == STROKE_TYPE_RECTANGLE) {
-                    tempCanvas.drawRect(record.rect, record.paint);
-                } else if (type == STROKE_TYPE_TEXT) {
-                    if (record.text != null) {
-                        StaticLayout layout = new StaticLayout(record.text, record.textPaint, record.textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
-                        tempCanvas.translate(record.textOffX, record.textOffY);
-                        layout.draw(tempCanvas);
-                        tempCanvas.translate(-record.textOffX, -record.textOffY);
-                    }
-                }
+                drawRecordToCanvas(tempCanvas,record);
             }
             canvas.drawBitmap(tempBitmap, new Rect(0, 0, tempCanvas.getWidth(), tempCanvas.getHeight()), new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), null);
         }
+    }
 
+    private void drawRecordToCanvas(Canvas canvas, StrokeRecord record) {
+        int type = record.type;
+        if (type == StrokeRecord.STROKE_TYPE_ERASER) {//橡皮擦需要在固化层也绘制
+            canvas.drawPath(record.path, record.paint);
+        } else if (type == StrokeRecord.STROKE_TYPE_DRAW || type == StrokeRecord.STROKE_TYPE_LINE) {
+            canvas.drawPath(record.path, record.paint);
+        } else if (type == STROKE_TYPE_CIRCLE) {
+            canvas.drawOval(record.rect, record.paint);
+        } else if (type == STROKE_TYPE_RECTANGLE) {
+            canvas.drawRect(record.rect, record.paint);
+        } else if (type == STROKE_TYPE_TEXT) {
+            if (record.text != null) {
+                StaticLayout layout = new StaticLayout(record.text, record.textPaint, record.textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
+                canvas.translate(record.textOffX, record.textOffY);
+                layout.draw(canvas);
+                canvas.translate(-record.textOffX, -record.textOffY);
+            }
+        }
     }
 
     /**
