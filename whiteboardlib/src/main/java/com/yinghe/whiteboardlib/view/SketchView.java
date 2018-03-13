@@ -30,7 +30,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -49,8 +48,6 @@ import com.yinghe.whiteboardlib.Utils.ScreenUtils;
 import com.yinghe.whiteboardlib.bean.PhotoRecord;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
-
-import java.io.File;
 
 import static com.yinghe.whiteboardlib.Utils.BitmapUtils.createBitmapThumbnail;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_CIRCLE;
@@ -96,7 +93,6 @@ public class SketchView extends View implements OnTouchListener {
     public StrokeRecord curStrokeRecord;
     public PhotoRecord curPhotoRecord;
     public int actionMode;
-    public float simpleScale = 0.5f;//图片载入的缩放倍数
     public TextWindowCallback textWindowCallback;
     public float strokeSize = DEFAULT_STROKE_SIZE;
     public int strokeRealColor = Color.BLACK;//画笔实际颜色
@@ -787,7 +783,7 @@ public class SketchView extends View implements OnTouchListener {
     }
 
     public void addPhotoByPath(String path) {
-        Bitmap sampleBM = getSampleBitMap(path);
+        Bitmap sampleBM = BitmapUtils.getSampleBitMap(mContext,path);
         addPhotoByBitmap(sampleBM);
     }
 
@@ -820,7 +816,7 @@ public class SketchView extends View implements OnTouchListener {
     }
 
     public void setBackgroundByPath(String path) {
-        Bitmap sampleBM = getSampleBitMap(path);
+        Bitmap sampleBM = BitmapUtils.getSampleBitMap(mContext,path);
         if (sampleBM != null) {
             setBackgroundByBitmap(sampleBM);
         } else {
@@ -833,16 +829,6 @@ public class SketchView extends View implements OnTouchListener {
         backgroundSrcRect = new Rect(0, 0, curSketchData.backgroundBM.getWidth(), curSketchData.backgroundBM.getHeight());
         backgroundDstRect = new Rect(0, 0, mWidth, mHeight);
         invalidate();
-    }
-
-    public Bitmap getSampleBitMap(String path) {
-        Bitmap sampleBM = null;
-        if (path.contains(Environment.getExternalStorageDirectory().toString())) {
-            sampleBM = getSDCardPhoto(path);
-        } else {
-            sampleBM = getAssetsPhoto(path);
-        }
-        return sampleBM;
     }
 
     @NonNull
@@ -872,19 +858,6 @@ public class SketchView extends View implements OnTouchListener {
         curSketchData.photoRecordList.add(record);
         curPhotoRecord = record;
         invalidate();
-    }
-
-    public Bitmap getSDCardPhoto(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            return BitmapUtils.decodeSampleBitMapFromFile(mContext, path, simpleScale);
-        } else {
-            return null;
-        }
-    }
-
-    public Bitmap getAssetsPhoto(String path) {
-        return BitmapUtils.getBitmapFromAssets(mContext, path);
     }
 
     public int getEditMode() {

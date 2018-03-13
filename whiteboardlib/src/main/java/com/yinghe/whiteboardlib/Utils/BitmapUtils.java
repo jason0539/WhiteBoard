@@ -5,9 +5,11 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -119,4 +121,23 @@ public class BitmapUtils {
         }
     }
 
+    public static Bitmap getSDCardPhoto(Context context, String path) {
+        float simpleScale = 0.5f;//图片载入的缩放倍数
+        File file = new File(path);
+        if (file.exists()) {
+            return BitmapUtils.decodeSampleBitMapFromFile(context, path, simpleScale);
+        } else {
+            return null;
+        }
+    }
+
+    public static Bitmap getSampleBitMap(Context context, String path) {
+        Bitmap sampleBM = null;
+        if (path.contains(Environment.getExternalStorageDirectory().toString())) {
+            sampleBM = getSDCardPhoto(context,path);
+        } else {
+            sampleBM = getBitmapFromAssets(context, path);
+        }
+        return sampleBM;
+    }
 }
