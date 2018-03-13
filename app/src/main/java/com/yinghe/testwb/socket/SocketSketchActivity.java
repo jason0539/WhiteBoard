@@ -1,6 +1,7 @@
 package com.yinghe.testwb.socket;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.yinghe.testwb.R;
 import com.yinghe.testwb.util.UtilThread;
+import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
 
 /**
  * Created by liuzhenhui on 2018/3/13.
@@ -21,6 +23,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
     private Button bnConnect;
     private EditText edIP, edData;
 
+    private WhiteBoardFragment whiteBoardFragment;
     private TcpClient client = new TcpClient() {
         @Override
         public void onConnect(SocketTransceiver transceiver) {
@@ -67,6 +70,9 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         edData = (EditText) this.findViewById(R.id.ed_dat);
 
         refreshUI(false);
+        FragmentTransaction ts = getSupportFragmentManager().beginTransaction();
+        whiteBoardFragment = WhiteBoardFragment.newInstance();
+        ts.add(R.id.fl_main, whiteBoardFragment, "wb").commit();
     }
 
     @Override
