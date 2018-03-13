@@ -1,8 +1,6 @@
 package com.yinghe.testwb.socket;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,10 +21,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
     private Button bnConnect;
     private EditText edIP, edData;
 
-    private Handler handler = new Handler(Looper.getMainLooper());
-
     private TcpClient client = new TcpClient() {
-
         @Override
         public void onConnect(SocketTransceiver transceiver) {
             refreshUI(true);
@@ -39,7 +34,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onConnectFailed() {
-            handler.post(new Runnable() {
+            UtilThread.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(SocketSketchActivity.this, "连接失败",
@@ -50,7 +45,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onReceive(SocketTransceiver transceiver, final String s) {
-            handler.post(new Runnable() {
+            UtilThread.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Log.e("SKETCH",s);
@@ -98,7 +93,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
      * @param isConnected
      */
     private void refreshUI(final boolean isConnected) {
-        handler.post(new Runnable() {
+        UtilThread.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 edIP.setEnabled(!isConnected);
