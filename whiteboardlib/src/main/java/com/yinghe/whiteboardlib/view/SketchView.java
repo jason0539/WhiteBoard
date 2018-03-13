@@ -265,7 +265,7 @@ public class SketchView extends View implements OnTouchListener {
     @Override
     protected void onDraw(Canvas canvas) {
         drawBackground(canvas);
-        drawRecord(canvas);
+        drawRecord(canvas,true);
         if (onDrawChangedListener != null) {
             onDrawChangedListener.onDrawChanged();
         }
@@ -292,10 +292,6 @@ public class SketchView extends View implements OnTouchListener {
             canvas.drawColor(Color.rgb(239, 234, 224));
 //            }
         }
-    }
-
-    public void drawRecord(Canvas canvas) {
-        drawRecord(canvas, true);
     }
 
     public Bitmap tempBitmap;//临时绘制的bitmap
