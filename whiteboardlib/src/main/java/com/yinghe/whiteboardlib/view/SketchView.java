@@ -167,8 +167,9 @@ public class SketchView extends View implements OnTouchListener {
     }
 
     public void updateSketchData(SketchData sketchData) {
-        if (curSketchData != null)
+        if (curSketchData != null){
             curSketchData.thumbnailBM = getThumbnailResultBitmap();//更新数据前先保存上一份数据的缩略图
+        }
         setSketchData(sketchData);
     }
 
@@ -235,9 +236,11 @@ public class SketchView extends View implements OnTouchListener {
 //        Log.d(getClass().getSimpleName(), "onTouch======" + toolType);
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_POINTER_DOWN:
+                //防止误触，计算多点触摸时两点范围，超过一定距离才认为是多点模式
                 float downDistance = spacing(event);
-                if (actionMode == ACTION_DRAG && downDistance > 10)//防止误触
+                if (actionMode == ACTION_DRAG && downDistance > 10){
                     actionMode = ACTION_SCALE;
+                }
                 break;
             case MotionEvent.ACTION_DOWN:
                 touch_down();
@@ -267,8 +270,9 @@ public class SketchView extends View implements OnTouchListener {
     protected void onDraw(Canvas canvas) {
         drawBackground(canvas);
         drawRecord(canvas);
-        if (onDrawChangedListener != null)
+        if (onDrawChangedListener != null) {
             onDrawChangedListener.onDrawChanged();
+        }
     }
 
     public void drawBackground(Canvas canvas) {
@@ -458,6 +462,7 @@ public class SketchView extends View implements OnTouchListener {
         downX = curX;
         downY = curY;
         if (curSketchData.editMode == EDIT_STROKE) {
+            //进行新的绘制时，清空redo栈（如果要保留，注释这行即可）
             curSketchData.strokeRedoList.clear();
             curStrokeRecord = new StrokeRecord(curSketchData.strokeType);
             strokePaint.setAntiAlias(true);//由于降低密度绘制，所以需要抗锯齿
