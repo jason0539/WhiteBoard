@@ -20,10 +20,11 @@ import com.yinghe.testwb.util.UtilThread;
  */
 
 public class SocketSketchActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final int PORT = 1234;
 
     private Button bnConnect;
     private TextView txReceive;
-    private EditText edIP, edPort, edData;
+    private EditText edIP, edData;
 
     private Handler handler = new Handler(Looper.getMainLooper());
 
@@ -71,7 +72,6 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         bnConnect.setOnClickListener(this);
 
         edIP = (EditText) this.findViewById(R.id.ed_ip);
-        edPort = (EditText) this.findViewById(R.id.ed_port);
         edData = (EditText) this.findViewById(R.id.ed_dat);
         txReceive = (TextView) this.findViewById(R.id.tx_receive);
         txReceive.setOnClickListener(this);
@@ -109,7 +109,6 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         handler.post(new Runnable() {
             @Override
             public void run() {
-                edPort.setEnabled(!isConnected);
                 edIP.setEnabled(!isConnected);
                 bnConnect.setText(isConnected ? "断开" : "连接");
             }
@@ -126,8 +125,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         } else {
             try {
                 String hostIP = edIP.getText().toString();
-                int port = Integer.parseInt(edPort.getText().toString());
-                client.connect(hostIP, port);
+                client.connect(hostIP, PORT);
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "端口错误", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
