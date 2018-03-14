@@ -44,9 +44,11 @@ import android.widget.Toast;
 
 import com.yinghe.whiteboardlib.R;
 import com.yinghe.whiteboardlib.Utils.BitmapUtils;
+import com.yinghe.whiteboardlib.Utils.PaintUtils;
 import com.yinghe.whiteboardlib.Utils.ScreenUtils;
 import com.yinghe.whiteboardlib.bean.PhotoRecord;
 import com.yinghe.whiteboardlib.bean.SketchData;
+import com.yinghe.whiteboardlib.bean.StrokePath;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
 
 import static com.yinghe.whiteboardlib.Utils.BitmapUtils.createBitmapThumbnail;
@@ -99,7 +101,7 @@ public class SketchView extends View implements OnTouchListener {
     public int strokeColor = Color.BLACK;//画笔颜色
     public int strokeAlpha = 255;//画笔透明度
     public float eraserSize = DEFAULT_ERASER_SIZE;
-    public Path strokePath;
+    public StrokePath strokePath;
     public Paint strokePaint;
     public float downX, downY, preX, preY, curX, curY;
     public int mWidth, mHeight;
@@ -175,13 +177,8 @@ public class SketchView extends View implements OnTouchListener {
 //        setFocusableInTouchMode(true);
         setBackgroundColor(Color.WHITE);
 
-        strokePaint = new Paint();
-        strokePaint.setAntiAlias(true);
-        strokePaint.setDither(true);
+        strokePaint = PaintUtils.createDefaultStrokePaint();
         strokePaint.setColor(strokeRealColor);
-        strokePaint.setStyle(Paint.Style.STROKE);
-        strokePaint.setStrokeJoin(Paint.Join.ROUND);
-        strokePaint.setStrokeCap(Paint.Cap.ROUND);
         strokePaint.setStrokeWidth(strokeSize);
 
         boardPaint = new Paint();
@@ -449,14 +446,14 @@ public class SketchView extends View implements OnTouchListener {
                 strokePaint.setXfermode(null);//关键代码
             }
             if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
-                strokePath = new Path();
+                strokePath = new StrokePath();
                 strokePath.moveTo(downX, downY);
                 strokePaint.setColor(Color.WHITE);
                 strokePaint.setStrokeWidth(eraserSize);
                 curStrokeRecord.paint = new Paint(strokePaint); // Clones the mPaint object
                 curStrokeRecord.path = strokePath;
             } else if (curSketchData.strokeType == STROKE_TYPE_DRAW || curSketchData.strokeType == STROKE_TYPE_LINE) {
-                strokePath = new Path();
+                strokePath = new StrokePath();
                 strokePath.moveTo(downX, downY);
                 curStrokeRecord.path = strokePath;
                 strokePaint.setColor(strokeRealColor);
@@ -658,11 +655,16 @@ public class SketchView extends View implements OnTouchListener {
     }
 
     public void touch_up() {
+        strokePath.end(curX, curY);
     }
 
     @NonNull
     public Bitmap getResultBitmap() {
         return getResultBitmap(null);
+    }
+
+    public SketchData getSketchData() {
+        return curSketchData;
     }
 
     @NonNull

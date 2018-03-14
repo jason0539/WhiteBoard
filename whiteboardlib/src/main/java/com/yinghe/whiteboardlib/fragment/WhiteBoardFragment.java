@@ -25,6 +25,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -38,8 +39,11 @@ import android.widget.Toast;
 import com.yinghe.whiteboardlib.MultiImageSelector;
 import com.yinghe.whiteboardlib.R;
 import com.yinghe.whiteboardlib.Utils.BitmapUtils;
+import com.yinghe.whiteboardlib.Utils.FileUtils;
+import com.yinghe.whiteboardlib.Utils.MLog;
 import com.yinghe.whiteboardlib.Utils.ScreenUtils;
 import com.yinghe.whiteboardlib.Utils.TimeUtils;
+import com.yinghe.whiteboardlib.persistence.TransUtils;
 import com.yinghe.whiteboardlib.adapter.SketchDataGridAdapter;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
@@ -76,6 +80,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     private static final float BTN_ALPHA = 0.4f;
 
     //文件保存目录
+    public static final String SKETCH_DATA_PATH = Environment.getExternalStorageDirectory() + File.separator + "sketchdata.txt";
     public static final String TEMP_FILE_PATH = Environment.getExternalStorageDirectory().toString() + "/YingHe/temp/";
     public static final String FILE_PATH = Environment.getExternalStorageDirectory().toString() + "/YingHe/sketchPhoto/";
     public static final String TEMP_FILE_NAME = "temp_";
@@ -100,6 +105,8 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     ImageView btn_empty;//清空
     ImageView btn_send;//推送
     ImageView btn_send_space;//推送按钮间隔
+    Button btn_persistence;//持久化到文件
+    Button btn_recover;//从文件恢复
 
 
     RadioGroup strokeTypeRG, strokeColorRG;
@@ -526,6 +533,8 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         btn_save = (ImageView) view.findViewById(R.id.btn_save);
         btn_empty = (ImageView) view.findViewById(R.id.btn_empty);
         btn_send = (ImageView) view.findViewById(R.id.btn_send);
+        btn_persistence = (Button) view.findViewById(R.id.btn_persistance);
+        btn_recover = (Button) view.findViewById(R.id.btn_recover);
         btn_send_space = (ImageView) view.findViewById(R.id.btn_send_space);
         if (isTeacher) {
             btn_send.setVisibility(View.VISIBLE);
@@ -545,6 +554,8 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         btn_background.setOnClickListener(this);
         btn_drag.setOnClickListener(this);
         btn_send.setOnClickListener(this);
+        btn_persistence.setOnClickListener(this);
+        btn_recover.setOnClickListener(this);
         mSketchView.setTextWindowCallback(new SketchView.TextWindowCallback() {
             @Override
             public void onText(View anchor, StrokeRecord record) {
@@ -713,6 +724,17 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
                     }
                 }).start();
             }
+        }else if (id == R.id.btn_persistance) {
+            SketchData sketchData = mSketchView.getSketchData();
+            String sketchDataString = TransUtils.transSketchDataToString(sketchData);
+            MLog.d(MLog.TAG_SOCKET, "WhiteBoardFragment->onClick " + sketchDataString);
+            FileUtils.saveStringToFile(sketchDataString, SKETCH_DATA_PATH);
+        }else if (id == R.id.btn_recover) {
+            String sketchDataString = FileUtils.readStringFromFile(SKETCH_DATA_PATH);
+            SketchData sketchData = TransUtils.transStringToSketchData(sketchDataString);
+            mSketchView.setSketchData(sketchData);
+            mSketchView.invalidate();
+            MLog.d(MLog.TAG_SOCKET,"WhiteBoardFragment->onClick " + sketchDataString);
         }
     }
 
