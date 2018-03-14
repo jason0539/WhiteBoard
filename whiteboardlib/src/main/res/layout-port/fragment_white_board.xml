@@ -38,7 +38,17 @@
                 style="@style/control_btn"
                 android:src="@drawable/ic_add_small" />
 
-            <ImageView style="@style/control_btn.space" />
+            <Button
+                android:id="@+id/btn_persistance"
+                style="@style/control_btn"
+                android:text="save" />
+
+            <Button
+                android:id="@+id/btn_recover"
+                style="@style/control_btn"
+                android:text="recover" />
+
+            <!--<ImageView style="@style/control_btn.space" />-->
 
             <ImageView
                 android:id="@+id/btn_stroke"
@@ -64,7 +74,7 @@
                 android:alpha="0.4"
                 android:src="@drawable/ic_redo" />
 
-            <ImageView style="@style/control_btn.space" />
+            <!--<ImageView style="@style/control_btn.space" />-->
 
             <ImageView
                 android:id="@+id/btn_photo"
@@ -82,7 +92,7 @@
                 android:alpha="0.4"
                 android:src="@drawable/ic_drag" />
 
-            <ImageView style="@style/control_btn.space" />
+            <!--<ImageView style="@style/control_btn.space" />-->
 
             <ImageView
                 android:id="@+id/btn_save"
