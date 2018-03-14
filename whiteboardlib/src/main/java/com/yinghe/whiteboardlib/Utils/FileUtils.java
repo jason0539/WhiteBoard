@@ -5,7 +5,11 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import static android.os.Environment.MEDIA_MOUNTED;
@@ -126,4 +130,51 @@ public class FileUtils {
         return perm == PackageManager.PERMISSION_GRANTED;
     }
 
+    public static final void saveStringToFile(String string, String path) {
+        ensureFileExits(path);
+        BufferedWriter bufferedWriter = null;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(path,false));
+            bufferedWriter.write(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bufferedWriter != null) {
+                try {
+                    bufferedWriter.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                bufferedWriter = null;
+            }
+        }
+    }
+
+    public static final String readStringFromFile(String path) {
+        File file = new File(path);
+        if (file != null && file.exists()) {
+            Long filelength = file.length();
+            byte[] filecontent = new byte[filelength.intValue()];
+            try {
+                FileInputStream in = new FileInputStream(file);
+                in.read(filecontent);
+                in.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new String(filecontent);
+        }
+        return null;
+    }
+
+    public static final boolean ensureFileExits(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            return true;
+        }else {
+            return file.getParentFile().mkdirs();
+        }
+    }
 }
