@@ -41,12 +41,12 @@
             <Button
                 android:id="@+id/btn_persistance"
                 style="@style/control_btn"
-                android:text="save" />
+                android:text="存" />
 
             <Button
                 android:id="@+id/btn_recover"
                 style="@style/control_btn"
-                android:text="recover" />
+                android:text="取" />
 
             <!--<ImageView style="@style/control_btn.space" />-->
 
