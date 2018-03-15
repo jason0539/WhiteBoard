@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import com.yinghe.whiteboardlib.R;
 import com.yinghe.whiteboardlib.Utils.BitmapUtils;
+import com.yinghe.whiteboardlib.Utils.MLog;
 import com.yinghe.whiteboardlib.Utils.PaintUtils;
 import com.yinghe.whiteboardlib.Utils.ScreenUtils;
 import com.yinghe.whiteboardlib.bean.PhotoRecord;
@@ -128,6 +129,7 @@ public class SketchView extends View implements OnTouchListener {
             mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
                 @Override
                 public boolean onScale(ScaleGestureDetector detector) {
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onScale ");
                     onScaleAction(detector);
                     return true;
                 }
@@ -135,12 +137,13 @@ public class SketchView extends View implements OnTouchListener {
 
                 @Override
                 public boolean onScaleBegin(ScaleGestureDetector detector) {
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onScaleBegin ");
                     return true;
                 }
 
                 @Override
                 public void onScaleEnd(ScaleGestureDetector detector) {
-
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onScaleEnd ");
                 }
             });
         }
@@ -234,6 +237,7 @@ public class SketchView extends View implements OnTouchListener {
 //        Log.d(getClass().getSimpleName(), "onTouch======" + toolType);
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_POINTER_DOWN:
+                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
                 //防止误触，计算多点触摸时两点范围，超过一定距离才认为是多点模式
                 float downDistance = spacing(event);
                 if (downDistance > MULTI_POINTER_THRESH) {
@@ -243,14 +247,17 @@ public class SketchView extends View implements OnTouchListener {
                 }
                 break;
             case MotionEvent.ACTION_DOWN:
+                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_DOWN");
                 touch_down();
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
+                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_MOVE");
                 touch_move(event);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_UP");
                 touch_up();
                 invalidate();
                 break;
