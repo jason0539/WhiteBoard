@@ -76,6 +76,7 @@ public class SketchView extends View implements OnTouchListener {
     public static float SCALE_MAX = 4.0f;
     public static float SCALE_MIN = 0.2f;
     public static float SCALE_MIN_LEN;
+    public static float MULTI_POINTER_THRESH = 10;//两指间距阈值，低于该值认为是误触
     public final String TAG = getClass().getSimpleName();
     public Paint boardPaint;
 
@@ -235,8 +236,10 @@ public class SketchView extends View implements OnTouchListener {
             case MotionEvent.ACTION_POINTER_DOWN:
                 //防止误触，计算多点触摸时两点范围，超过一定距离才认为是多点模式
                 float downDistance = spacing(event);
-                if (actionMode == ACTION_PHOTO_DRAG && downDistance > 10){
-                    actionMode = ACTION_PHOTO_SCALE;
+                if (downDistance > MULTI_POINTER_THRESH) {
+                    if (actionMode == ACTION_PHOTO_DRAG){
+                        actionMode = ACTION_PHOTO_SCALE;
+                    }
                 }
                 break;
             case MotionEvent.ACTION_DOWN:
