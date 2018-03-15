@@ -763,7 +763,9 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         ScreenUtils.showInput(mSketchView);
     }
 
-
+    public SketchView getSketchView() {
+        return mSketchView;
+    }
 
 
 

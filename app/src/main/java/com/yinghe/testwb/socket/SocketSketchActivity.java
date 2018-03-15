@@ -9,9 +9,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yinghe.testwb.R;
-import com.yinghe.whiteboardlib.Utils.MLog;
 import com.yinghe.testwb.util.UtilThread;
+import com.yinghe.whiteboardlib.Utils.MLog;
+import com.yinghe.whiteboardlib.bean.StrokeRecord;
 import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
+import com.yinghe.whiteboardlib.persistence.TransUtils;
+import com.yinghe.whiteboardlib.view.SketchView;
 
 /**
  * Created by liuzhenhui on 2018/3/13.
@@ -24,6 +27,7 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
     private EditText edIP, edData;
 
     private WhiteBoardFragment whiteBoardFragment;
+    private SketchView mSketchView;
     private TcpClient client = new TcpClient() {
         @Override
         public void onConnect(SocketTransceiver transceiver) {
@@ -47,11 +51,13 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         }
 
         @Override
-        public void onReceive(SocketTransceiver transceiver, final String s) {
+        public void onReceive(final SocketTransceiver transceiver, final String s) {
             UtilThread.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     MLog.d(MLog.TAG_SOCKET,"SocketSketchActivity->run " + s);
+                    StrokeRecord strokeRecord = TransUtils.transStringToStrokeRecord(s);
+                    mSketchView.addStrokePath(strokeRecord);
                 }
             });
         }
@@ -73,6 +79,26 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         FragmentTransaction ts = getSupportFragmentManager().beginTransaction();
         whiteBoardFragment = WhiteBoardFragment.newInstance();
         ts.add(R.id.fl_main, whiteBoardFragment, "wb").commit();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mSketchView = whiteBoardFragment.getSketchView();
+        mSketchView.setOnStrokeRecordFinishListener(new SketchView.OnStrokeRecordFinishListener() {
+            @Override
+            public void onPathDrawFinish(final StrokeRecord strokeRecord) {
+                UtilThread.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (client.isConnected()) {
+                            String stroRecordString = TransUtils.transStrokeRecordToString(strokeRecord);
+                            client.getTransceiver().send(stroRecordString);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override

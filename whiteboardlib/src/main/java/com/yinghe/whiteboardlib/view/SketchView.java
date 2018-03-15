@@ -115,6 +115,7 @@ public class SketchView extends View implements OnTouchListener {
      */
     public ScaleGestureDetector mScaleGestureDetector = null;
     public OnDrawChangedListener onDrawChangedListener;
+    public OnStrokeRecordFinishListener onStrokeRecordFinishListener;
 
     public SketchView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -169,6 +170,11 @@ public class SketchView extends View implements OnTouchListener {
             curSketchData.thumbnailBM = getThumbnailResultBitmap();//更新数据前先保存上一份数据的缩略图
         }
         setSketchData(sketchData);
+    }
+
+    public void addStrokePath(StrokeRecord strokeRecord) {
+        curSketchData.strokeRecordList.add(strokeRecord);
+        invalidate();
     }
 
     public void initParams(Context context) {
@@ -656,6 +662,12 @@ public class SketchView extends View implements OnTouchListener {
 
     public void touch_up() {
         strokePath.end(curX, curY);
+        //先只同步DRAW类型
+        if (strokePath.getPathType() == StrokePath.PathType.QUAD_TO) {
+            if (onStrokeRecordFinishListener != null) {
+                onStrokeRecordFinishListener.onPathDrawFinish(curStrokeRecord);
+            }
+        }
     }
 
     @NonNull
@@ -867,6 +879,10 @@ public class SketchView extends View implements OnTouchListener {
         invalidate();
     }
 
+    public void setOnStrokeRecordFinishListener(OnStrokeRecordFinishListener listener){
+        onStrokeRecordFinishListener = listener;
+    }
+
     public interface TextWindowCallback {
         void onText(View view, StrokeRecord record);
     }
@@ -874,5 +890,9 @@ public class SketchView extends View implements OnTouchListener {
     public interface OnDrawChangedListener {
 
         public void onDrawChanged();
+    }
+
+    public interface OnStrokeRecordFinishListener {
+        void onPathDrawFinish(StrokeRecord strokeRecord);
     }
 }
