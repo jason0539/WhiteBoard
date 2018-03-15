@@ -700,7 +700,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         } else if (id == R.id.btn_redo) {
             mSketchView.redo();
         } else if (id == R.id.btn_empty) {
-            askForErase();
+            mSketchView.erase();
         } else if (id == R.id.btn_save) {
             if (mSketchView.getRecordCount() == 0) {
                 Toast.makeText(getActivity(), "您还没有绘图", Toast.LENGTH_SHORT).show();
@@ -890,20 +890,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         } catch (Exception e) {
             return null;
         }
-    }
-
-
-    private void askForErase() {
-        new AlertDialog.Builder(getActivity())
-                .setMessage("擦除手绘?")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mSketchView.erase();
-                    }
-                })
-                .create()
-                .show();
     }
 
     private void showBtn(ImageView iv) {
