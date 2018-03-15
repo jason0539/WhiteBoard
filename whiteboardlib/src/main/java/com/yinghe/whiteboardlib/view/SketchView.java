@@ -69,9 +69,9 @@ public class SketchView extends View implements OnTouchListener {
     public static final int DEFAULT_ERASER_SIZE = 50;
     public static final float TOUCH_TOLERANCE = 4;
     public static final int ACTION_NONE = 0;
-    public static final int ACTION_DRAG = 1;
-    public static final int ACTION_SCALE = 2;
-    public static final int ACTION_ROTATE = 3;
+    public static final int ACTION_PHOTO_DRAG = 1;
+    public static final int ACTION_PHOTO_SCALE = 2;
+    public static final int ACTION_PHOTO_ROTATE = 3;
     //    public int curSketchData.editMode = EDIT_STROKE;
     public static float SCALE_MAX = 4.0f;
     public static float SCALE_MIN = 0.2f;
@@ -238,8 +238,8 @@ public class SketchView extends View implements OnTouchListener {
             case MotionEvent.ACTION_POINTER_DOWN:
                 //防止误触，计算多点触摸时两点范围，超过一定距离才认为是多点模式
                 float downDistance = spacing(event);
-                if (actionMode == ACTION_DRAG && downDistance > 10){
-                    actionMode = ACTION_SCALE;
+                if (actionMode == ACTION_PHOTO_DRAG && downDistance > 10){
+                    actionMode = ACTION_PHOTO_SCALE;
                 }
                 break;
             case MotionEvent.ACTION_DOWN:
@@ -488,7 +488,7 @@ public class SketchView extends View implements OnTouchListener {
                 return;
             }
             if (isInPhotoRect(curPhotoRecord, downPoint)) {//再判断是否点击了当前图片
-                actionMode = ACTION_DRAG;
+                actionMode = ACTION_PHOTO_DRAG;
                 return;
             }
             selectPhoto(downPoint);//最后判断是否点击了其他图片
@@ -507,7 +507,7 @@ public class SketchView extends View implements OnTouchListener {
         }
         if (clickRecord != null) {
             setCurPhotoRecord(clickRecord);
-            actionMode = ACTION_DRAG;
+            actionMode = ACTION_PHOTO_DRAG;
         } else {
             actionMode = ACTION_NONE;
         }
@@ -515,7 +515,7 @@ public class SketchView extends View implements OnTouchListener {
 
     public boolean isInMarkRect(float[] downPoint) {
         if (markerRotateRect.contains(downPoint[0], (int) downPoint[1])) {//判断是否在区域内
-            actionMode = ACTION_ROTATE;
+            actionMode = ACTION_PHOTO_ROTATE;
             return true;
         }
         if (markerDeleteRect.contains(downPoint[0], (int) downPoint[1])) {//判断是否在区域内
@@ -569,11 +569,11 @@ public class SketchView extends View implements OnTouchListener {
 
             }
         } else if (curSketchData.editMode == EDIT_PHOTO && curPhotoRecord != null) {
-            if (actionMode == ACTION_DRAG) {
+            if (actionMode == ACTION_PHOTO_DRAG) {
                 onDragAction((curX - preX) * drawDensity, (curY - preY) * drawDensity);
-            } else if (actionMode == ACTION_ROTATE) {
+            } else if (actionMode == ACTION_PHOTO_ROTATE) {
                 onRotateAction(curPhotoRecord);
-            } else if (actionMode == ACTION_SCALE) {
+            } else if (actionMode == ACTION_PHOTO_SCALE) {
                 mScaleGestureDetector.onTouchEvent(event);
             }
         }
