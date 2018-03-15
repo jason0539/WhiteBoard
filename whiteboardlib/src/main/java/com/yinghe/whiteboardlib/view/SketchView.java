@@ -219,13 +219,10 @@ public class SketchView extends View implements OnTouchListener {
         SketchViewStatusHolder.setSize(mWidth, mHeight);
     }
 
-    int[] location = new int[2];
-
     @Override
     public boolean onTouch(View arg0, MotionEvent event) {
-        getLocationInWindow(location); //获取在当前窗口内的绝对坐标
-        curX = (event.getRawX() - location[0]) / drawDensity;
-        curY = (event.getRawY() - location[1]) / drawDensity;
+        curX = (event.getX()) / drawDensity;
+        curY = (event.getY()) / drawDensity;
         int toolType = event.getToolType(0);
 //        //检测到手指点击自动进入拖动图片模式
 //        if (toolType == MotionEvent.TOOL_TYPE_FINGER&&curSketchData.editMode == EDIT_STROKE) {
