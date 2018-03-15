@@ -27,4 +27,4 @@ echo "jarfile = "$jarfile
 javac -d $BIN_PATH/ -cp $jarfile @$SRC_FILE_LIST_PATH
 
 #运行
-java -cp $BIN_PATH$jarfile com.zuiapps.danmaku.server.Main
+java -cp $BIN_PATH$jarfile com.jzj.socket.ClsMainServer
