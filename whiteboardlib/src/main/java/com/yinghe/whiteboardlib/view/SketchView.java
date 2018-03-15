@@ -216,6 +216,7 @@ public class SketchView extends View implements OnTouchListener {
         mWidth = MeasureSpec.getSize(widthMeasureSpec);
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(mWidth, mHeight);
+        SketchViewStatusHolder.setSize(mWidth, mHeight);
     }
 
     int[] location = new int[2];

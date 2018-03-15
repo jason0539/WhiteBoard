@@ -8,8 +8,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.yinghe.whiteboardlib.Utils.PaintUtils;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokePath;
-import com.yinghe.whiteboardlib.bean.StrokeRecord;
 import com.yinghe.whiteboardlib.bean.StrokePoint;
+import com.yinghe.whiteboardlib.bean.StrokeRecord;
+import com.yinghe.whiteboardlib.view.SketchViewStatusHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +142,7 @@ public class TransUtils {
      * 把一个坐标转换成string
      */
     public static final String transSketchPointToString(StrokePoint point) {
-        return String.valueOf(point.getX() + "," + point.getY());
+        return String.valueOf(point.getX() / SketchViewStatusHolder.getSketchViewWidth() + "," + point.getY() / SketchViewStatusHolder.getSketchViewHeight());
     }
 
     /**
@@ -149,8 +150,8 @@ public class TransUtils {
      */
     public static final StrokePoint transStringToSketchPoint(String pointString) {
         String[] pointsString = pointString.split(",");
-        float x = Float.valueOf(pointsString[0]);
-        float y = Float.valueOf(pointsString[1]);
+        float x = Float.valueOf(pointsString[0]) * SketchViewStatusHolder.getSketchViewWidth();
+        float y = Float.valueOf(pointsString[1]) * SketchViewStatusHolder.getSketchViewHeight();
         return new StrokePoint(x, y);
     }
 }
