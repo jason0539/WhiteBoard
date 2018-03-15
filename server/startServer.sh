@@ -5,14 +5,14 @@ JAR_PATH=libs
 BIN_PATH=bin
 SRC_PATH=src
 
-# java文件列表目录
+# java文件列表临时存储文件
 SRC_FILE_LIST_PATH=src/sources.list
 
-#生所有的java文件列表
-rm -f $SRC_PATH/sources
+# 删除临时文件，重新罗列所有需要编译的java文件
+rm -f $SRC_FILE_LIST_PATH
 find $SRC_PATH/ -name *.java > $SRC_FILE_LIST_PATH
 
-#删除就的编译文件 生成bin目录
+#删除旧的编译文件 生成bin目录
 rm -rf $BIN_PATH/
 mkdir $BIN_PATH/
 
