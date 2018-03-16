@@ -111,7 +111,7 @@ public class SketchView extends View implements OnTouchListener {
 //    public List<StrokeRecord> curSketchData.strokeRecordList;
 //    public List<StrokeRecord> curSketchData.strokeRedoList;
     public Context mContext;
-    public int drawDensity = 2;//绘制密度,数值越高图像质量越低、性能越好
+    public int drawDensity = 1;//绘制密度,数值越高图像质量越低、性能越好
     /**
      * 缩放手势
      */
