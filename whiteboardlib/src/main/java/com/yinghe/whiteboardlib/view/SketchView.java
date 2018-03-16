@@ -39,7 +39,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 import com.yinghe.whiteboardlib.R;
@@ -61,7 +60,7 @@ import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_RECTANGLE;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
 
 
-public class SketchView extends View implements OnTouchListener {
+public class SketchView extends View {
 
     public static final int EDIT_STROKE = 1;
     public static final int EDIT_PHOTO = 2;
@@ -125,7 +124,6 @@ public class SketchView extends View implements OnTouchListener {
 //        setSketchData(new SketchData());
         initParams(context);
         if (isFocusable()) {
-            this.setOnTouchListener(this);
             mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
                 @Override
                 public boolean onScale(ScaleGestureDetector detector) {
@@ -223,10 +221,21 @@ public class SketchView extends View implements OnTouchListener {
         SketchViewStatusHolder.setSize(mWidth, mHeight);
     }
 
+    //缩放参数
+    private float mScale = 1;
+    private PointF mOffset = new PointF(0, 0);
+    public void setScaleAndOffset(float scaleX, float mMatrixValus, float mMatrixValus1) {
+        mScale = scaleX;
+        mOffset.x = mMatrixValus;
+        mOffset.y = mMatrixValus1;
+        curStrokeRecord.path.setScaleAndOffset(mScale,mOffset.x,mOffset.y);
+    }
+
     @Override
-    public boolean onTouch(View arg0, MotionEvent event) {
-        curX = (event.getX()) / drawDensity;
-        curY = (event.getY()) / drawDensity;
+    public boolean onTouchEvent(MotionEvent event) {
+        //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
+        curX = ((event.getX()) / drawDensity - mOffset.x)/mScale;
+        curY = ((event.getY()) / drawDensity - mOffset.y)/mScale;
         int toolType = event.getToolType(0);
 //        //检测到手指点击自动进入拖动图片模式
 //        if (toolType == MotionEvent.TOOL_TYPE_FINGER&&curSketchData.editMode == EDIT_STROKE) {
@@ -336,7 +345,7 @@ public class SketchView extends View implements OnTouchListener {
             }
             //节省性能把10笔以前的全都画(保存)进固化层(tempHoldBitmap),移除record历史
             //从而每次10笔以前的一次性从tempHoldBitmap绘制过来，其他重绘最多10笔，
-            while (curSketchData.strokeRecordList.size() > 10) {
+            while (curSketchData.strokeRecordList.size() > Integer.MAX_VALUE) {
                 StrokeRecord record = curSketchData.strokeRecordList.remove(0);
                 drawRecordToCanvas(tempHoldCanvas,record);
             }

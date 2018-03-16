@@ -27,6 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +48,7 @@ import com.yinghe.whiteboardlib.persistence.TransUtils;
 import com.yinghe.whiteboardlib.adapter.SketchDataGridAdapter;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
+import com.yinghe.whiteboardlib.view.ScaleSketchView;
 import com.yinghe.whiteboardlib.view.SketchView;
 
 import java.io.File;
@@ -89,7 +91,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     int textOffX;
     int textOffY;
 
-    SketchView mSketchView;//画板
+    ScaleSketchView mSketchView;//画板
 
     View controlLayout;//控制布局
 
@@ -514,12 +516,13 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
 
 
     private void findView(View view) {
+        FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.fl_sketch_container);
 
         sketchGV = (GridView) view.findViewById(R.id.sketch_data_gv);
 
         //画板整体布局
-        mSketchView = (SketchView) view.findViewById(R.id.sketch_view);
-
+        mSketchView = new ScaleSketchView(view.getContext(),null);
+        frameLayout.addView(mSketchView);
         controlLayout = view.findViewById(R.id.controlLayout);
 
         btn_add = (ImageView) view.findViewById(R.id.btn_add);
@@ -733,7 +736,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
             String sketchDataString = FileUtils.readStringFromFile(SKETCH_DATA_PATH);
             SketchData sketchData = TransUtils.transStringToSketchData(sketchDataString);
             mSketchView.setSketchData(sketchData);
-            mSketchView.invalidate();
+            mSketchView.getSketchView().invalidate();
             MLog.d(MLog.TAG_SOCKET,"WhiteBoardFragment->onClick " + sketchDataString);
         }
     }
@@ -764,7 +767,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     }
 
     public SketchView getSketchView() {
-        return mSketchView;
+        return mSketchView.getSketchView();
     }
 
 

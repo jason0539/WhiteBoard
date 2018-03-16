@@ -5,6 +5,7 @@
                 android:background="#FFFFFF">
 
     <FrameLayout
+        android:id="@+id/fl_sketch_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/controlLayout"
@@ -19,14 +20,6 @@
             android:horizontalSpacing="@dimen/sketch_gv_padding"
             android:verticalSpacing="@dimen/sketch_gv_padding"
             android:numColumns="4" />
-
-        <com.yinghe.whiteboardlib.view.SketchView
-            android:id="@+id/sketch_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_gravity="center" />
 
         <!--<include layout="@layout/include_grid_view_layout" />-->
 
