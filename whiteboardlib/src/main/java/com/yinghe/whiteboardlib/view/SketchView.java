@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.yinghe.whiteboardlib.R;
 import com.yinghe.whiteboardlib.Utils.BitmapUtils;
 import com.yinghe.whiteboardlib.Utils.MLog;
+import com.yinghe.whiteboardlib.Utils.MathUtil;
 import com.yinghe.whiteboardlib.Utils.PaintUtils;
 import com.yinghe.whiteboardlib.Utils.ScreenUtils;
 import com.yinghe.whiteboardlib.bean.PhotoRecord;
@@ -111,6 +112,7 @@ public class SketchView extends View {
 //    public List<StrokeRecord> curSketchData.strokeRedoList;
     public Context mContext;
     public int drawDensity = 1;//绘制密度,数值越高图像质量越低、性能越好
+    public boolean needCheckThresh = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
     /**
      * 缩放手势
      */
@@ -228,7 +230,10 @@ public class SketchView extends View {
         mScale = scaleX;
         mOffset.x = mMatrixValus;
         mOffset.y = mMatrixValus1;
-        curStrokeRecord.path.setScaleAndOffset(mScale,mOffset.x,mOffset.y);
+        //绘制形状时path为空
+        if (curStrokeRecord.path != null) {
+            curStrokeRecord.path.setScaleAndOffset(mScale,mOffset.x,mOffset.y);
+        }
     }
 
     @Override
@@ -458,6 +463,7 @@ public class SketchView extends View {
     public void touch_down() {
         downX = curX;
         downY = curY;
+        needCheckThresh = true;
         if (curSketchData.editMode == EDIT_STROKE) {
             //进行新的绘制时，清空redo栈（如果要保留，注释这行即可）
             curSketchData.strokeRedoList.clear();
@@ -570,27 +576,31 @@ public class SketchView extends View {
     }
 
     public void touch_move(MotionEvent event) {
-        if (curSketchData.editMode == EDIT_STROKE) {
-            if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
-                strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
-            } else if (curSketchData.strokeType == STROKE_TYPE_DRAW) {
-                strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
-            } else if (curSketchData.strokeType == STROKE_TYPE_LINE) {
-                strokePath.reset();
-                strokePath.moveTo(downX, downY);
-                strokePath.lineTo(curX, curY);
-            } else if (curSketchData.strokeType == STROKE_TYPE_CIRCLE || curSketchData.strokeType == STROKE_TYPE_RECTANGLE) {
-                curStrokeRecord.rect.set(downX < curX ? downX : curX, downY < curY ? downY : curY, downX > curX ? downX : curX, downY > curY ? downY : curY);
-            } else if (curSketchData.strokeType == STROKE_TYPE_TEXT) {
+        if (!needCheckThresh ||
+                (needCheckThresh && MathUtil.rectDiagonal(curX-downX, curY- downY) > MULTI_POINTER_THRESH)) {
+            needCheckThresh = false;
+            if (curSketchData.editMode == EDIT_STROKE) {
+                if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
+                    strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
+                } else if (curSketchData.strokeType == STROKE_TYPE_DRAW) {
+                    strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
+                } else if (curSketchData.strokeType == STROKE_TYPE_LINE) {
+                    strokePath.reset();
+                    strokePath.moveTo(downX, downY);
+                    strokePath.lineTo(curX, curY);
+                } else if (curSketchData.strokeType == STROKE_TYPE_CIRCLE || curSketchData.strokeType == STROKE_TYPE_RECTANGLE) {
+                    curStrokeRecord.rect.set(downX < curX ? downX : curX, downY < curY ? downY : curY, downX > curX ? downX : curX, downY > curY ? downY : curY);
+                } else if (curSketchData.strokeType == STROKE_TYPE_TEXT) {
 
-            }
-        } else if (curSketchData.editMode == EDIT_PHOTO && curPhotoRecord != null) {
-            if (actionMode == ACTION_PHOTO_DRAG) {
-                onDragAction((curX - preX) * drawDensity, (curY - preY) * drawDensity);
-            } else if (actionMode == ACTION_PHOTO_ROTATE) {
-                onRotateAction(curPhotoRecord);
-            } else if (actionMode == ACTION_PHOTO_SCALE) {
-                mScaleGestureDetector.onTouchEvent(event);
+                }
+            } else if (curSketchData.editMode == EDIT_PHOTO && curPhotoRecord != null) {
+                if (actionMode == ACTION_PHOTO_DRAG) {
+                    onDragAction((curX - preX) * drawDensity, (curY - preY) * drawDensity);
+                } else if (actionMode == ACTION_PHOTO_ROTATE) {
+                    onRotateAction(curPhotoRecord);
+                } else if (actionMode == ACTION_PHOTO_SCALE) {
+                    mScaleGestureDetector.onTouchEvent(event);
+                }
             }
         }
         preX = curX;
