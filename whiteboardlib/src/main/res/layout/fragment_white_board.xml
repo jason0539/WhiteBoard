@@ -86,20 +86,9 @@
             <!--<ImageView style="@style/control_btn.space" />-->
 
             <ImageView
-                android:id="@+id/btn_photo"
-                style="@style/control_btn"
-                android:src="@drawable/ic_photo" />
-
-            <ImageView
                 android:id="@+id/btn_background"
                 style="@style/control_btn"
                 android:src="@drawable/ic_background" />
-
-            <ImageView
-                android:id="@+id/btn_drag"
-                style="@style/control_btn"
-                android:alpha="0.4"
-                android:src="@drawable/ic_drag" />
 
             <!--<ImageView style="@style/control_btn.space" />-->
 

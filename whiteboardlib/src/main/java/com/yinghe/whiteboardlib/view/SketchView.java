@@ -19,7 +19,6 @@ package com.yinghe.whiteboardlib.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -41,7 +40,6 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
-import com.yinghe.whiteboardlib.R;
 import com.yinghe.whiteboardlib.Utils.BitmapUtils;
 import com.yinghe.whiteboardlib.Utils.MLog;
 import com.yinghe.whiteboardlib.Utils.MathUtil;
@@ -64,15 +62,11 @@ import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
 public class SketchView extends View {
 
     public static final int EDIT_STROKE = 1;
-    public static final int EDIT_PHOTO = 2;
     public static final int DEFAULT_STROKE_SIZE = 3;
     public static final int DEFAULT_STROKE_ALPHA = 100;
     public static final int DEFAULT_ERASER_SIZE = 50;
     public static final float TOUCH_TOLERANCE = 4;
     public static final int ACTION_NONE = 0;
-    public static final int ACTION_PHOTO_DRAG = 1;
-    public static final int ACTION_PHOTO_SCALE = 2;
-    public static final int ACTION_PHOTO_ROTATE = 3;
     //    public int curSketchData.editMode = EDIT_STROKE;
     public static float SCALE_MAX = 4.0f;
     public static float SCALE_MIN = 0.2f;
@@ -81,15 +75,6 @@ public class SketchView extends View {
     public final String TAG = getClass().getSimpleName();
     public Paint boardPaint;
 
-    public Bitmap mirrorMarkBM = BitmapFactory.decodeResource(getResources(), R.drawable.mark_copy);
-    public Bitmap deleteMarkBM = BitmapFactory.decodeResource(getResources(), R.drawable.mark_delete);
-    public Bitmap rotateMarkBM = BitmapFactory.decodeResource(getResources(), R.drawable.mark_rotate);
-    public Bitmap resetMarkBM = BitmapFactory.decodeResource(getResources(), R.drawable.mark_reset);
-    //    Bitmap rotateMarkBM = BitmapFactory.decodeResource(getResources(), R.drawable.test);
-    public RectF markerCopyRect = new RectF(0, 0, mirrorMarkBM.getWidth(), mirrorMarkBM.getHeight());//镜像标记边界
-    public RectF markerDeleteRect = new RectF(0, 0, deleteMarkBM.getWidth(), deleteMarkBM.getHeight());//删除标记边界
-    public RectF markerRotateRect = new RectF(0, 0, rotateMarkBM.getWidth(), rotateMarkBM.getHeight());//旋转标记边界
-    public RectF markerResetRect = new RectF(0, 0, resetMarkBM.getWidth(), resetMarkBM.getHeight());//旋转标记边界
     public SketchData curSketchData;
     //    public Bitmap curSketchData.backgroundBM;
     public Rect backgroundSrcRect = new Rect();
@@ -252,13 +237,6 @@ public class SketchView extends View {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_POINTER_DOWN:
                 MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
-                //防止误触，计算多点触摸时两点范围，超过一定距离才认为是多点模式
-                float downDistance = spacing(event);
-                if (downDistance > MULTI_POINTER_THRESH) {
-                    if (actionMode == ACTION_PHOTO_DRAG){
-                        actionMode = ACTION_PHOTO_SCALE;
-                    }
-                }
                 break;
             case MotionEvent.ACTION_DOWN:
                 MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_DOWN");
@@ -279,12 +257,6 @@ public class SketchView extends View {
         preX = curX;
         preY = curY;
         return true;
-    }
-
-    public float spacing(MotionEvent event) {
-        float x = event.getX(0) - event.getX(1);
-        float y = event.getY(0) - event.getY(1);
-        return (float) Math.sqrt(x * x + y * y);
     }
 
     @Override
@@ -331,12 +303,6 @@ public class SketchView extends View {
                     Log.d(getClass().getSimpleName(), "drawRecord" + record.bitmap.toString());
                     canvas.drawBitmap(record.bitmap, record.matrix, null);
                 }
-            }
-            if (isDrawBoard && curSketchData.editMode == EDIT_PHOTO && curPhotoRecord != null) {
-                SCALE_MAX = curPhotoRecord.scaleMax;
-                float[] photoCorners = calculateCorners(curPhotoRecord);//计算图片四个角点和中心点
-                drawBoard(canvas, photoCorners);//绘制图形边线
-                drawMarks(canvas, photoCorners);//绘制边角图片
             }
             //新建一个临时画布，以便橡皮擦生效
             if (tempBitmap == null) {
@@ -405,31 +371,6 @@ public class SketchView extends View {
         photoBorderPath.lineTo(photoCorners[6], photoCorners[7]);
         photoBorderPath.lineTo(photoCorners[0], photoCorners[1]);
         canvas.drawPath(photoBorderPath, boardPaint);
-    }
-
-    //绘制边角操作图标
-    public void drawMarks(Canvas canvas, float[] photoCorners) {
-        float x;
-        float y;
-        x = photoCorners[0] - markerCopyRect.width() / 2;
-        y = photoCorners[1] - markerCopyRect.height() / 2;
-        markerCopyRect.offsetTo(x, y);
-        canvas.drawBitmap(mirrorMarkBM, x, y, null);
-
-        x = photoCorners[2] - markerDeleteRect.width() / 2;
-        y = photoCorners[3] - markerDeleteRect.height() / 2;
-        markerDeleteRect.offsetTo(x, y);
-        canvas.drawBitmap(deleteMarkBM, x, y, null);
-
-        x = photoCorners[4] - markerRotateRect.width() / 2;
-        y = photoCorners[5] - markerRotateRect.height() / 2;
-        markerRotateRect.offsetTo(x, y);
-        canvas.drawBitmap(rotateMarkBM, x, y, null);
-
-        x = photoCorners[6] - markerResetRect.width() / 2;
-        y = photoCorners[7] - markerResetRect.height() / 2;
-        markerResetRect.offsetTo(x, y);
-        canvas.drawBitmap(resetMarkBM, x, y, null);
     }
 
     public float[] calculateCorners(PhotoRecord record) {
@@ -504,75 +445,7 @@ public class SketchView extends View {
                 return;
             }
             curSketchData.strokeRecordList.add(curStrokeRecord);
-        } else if (curSketchData.editMode == EDIT_PHOTO) {
-            float[] downPoint = new float[]{downX * drawDensity, downY * drawDensity};//还原点倍数
-            if (isInMarkRect(downPoint)) {// 先判操作标记区域
-                return;
-            }
-            if (isInPhotoRect(curPhotoRecord, downPoint)) {//再判断是否点击了当前图片
-                actionMode = ACTION_PHOTO_DRAG;
-                return;
-            }
-            selectPhoto(downPoint);//最后判断是否点击了其他图片
         }
-    }
-
-    //judge click which photo，then can edit the photo
-    public void selectPhoto(float[] downPoint) {
-        PhotoRecord clickRecord = null;
-        for (int i = curSketchData.photoRecordList.size() - 1; i >= 0; i--) {
-            PhotoRecord record = curSketchData.photoRecordList.get(i);
-            if (isInPhotoRect(record, downPoint)) {
-                clickRecord = record;
-                break;
-            }
-        }
-        if (clickRecord != null) {
-            setCurPhotoRecord(clickRecord);
-            actionMode = ACTION_PHOTO_DRAG;
-        } else {
-            actionMode = ACTION_NONE;
-        }
-    }
-
-    public boolean isInMarkRect(float[] downPoint) {
-        if (markerRotateRect.contains(downPoint[0], (int) downPoint[1])) {//判断是否在区域内
-            actionMode = ACTION_PHOTO_ROTATE;
-            return true;
-        }
-        if (markerDeleteRect.contains(downPoint[0], (int) downPoint[1])) {//判断是否在区域内
-            curSketchData.photoRecordList.remove(curPhotoRecord);
-            setCurPhotoRecord(null);
-            actionMode = ACTION_NONE;
-            return true;
-        }
-        if (markerCopyRect.contains(downPoint[0], (int) downPoint[1])) {//判断是否在区域内
-            PhotoRecord newRecord = initPhotoRecord(curPhotoRecord.bitmap);
-            newRecord.matrix = new Matrix(curPhotoRecord.matrix);
-            newRecord.matrix.postTranslate(ScreenUtils.dip2px(mContext, 20), ScreenUtils.dip2px(mContext, 20));//偏移小段距离以分辨新复制的图片
-            setCurPhotoRecord(newRecord);
-            actionMode = ACTION_NONE;
-            return true;
-        }
-        if (markerResetRect.contains(downPoint[0], (int) downPoint[1])) {//判断是否在区域内
-            curPhotoRecord.matrix.reset();
-            curPhotoRecord.matrix.setTranslate(getWidth() / 2 - curPhotoRecord.photoRectSrc.width() / 2,
-                    getHeight() / 2 - curPhotoRecord.photoRectSrc.height() / 2);
-            actionMode = ACTION_NONE;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isInPhotoRect(PhotoRecord record, float[] downPoint) {
-        if (record != null) {
-            float[] invertPoint = new float[2];
-            Matrix invertMatrix = new Matrix();
-            record.matrix.invert(invertMatrix);
-            invertMatrix.mapPoints(invertPoint, downPoint);
-            return record.photoRectSrc.contains(invertPoint[0], invertPoint[1]);
-        }
-        return false;
     }
 
     public void touch_move(MotionEvent event) {
@@ -593,14 +466,6 @@ public class SketchView extends View {
                 } else if (curSketchData.strokeType == STROKE_TYPE_TEXT) {
 
                 }
-            } else if (curSketchData.editMode == EDIT_PHOTO && curPhotoRecord != null) {
-                if (actionMode == ACTION_PHOTO_DRAG) {
-                    onDragAction((curX - preX) * drawDensity, (curY - preY) * drawDensity);
-                } else if (actionMode == ACTION_PHOTO_ROTATE) {
-                    onRotateAction(curPhotoRecord);
-                } else if (actionMode == ACTION_PHOTO_SCALE) {
-                    mScaleGestureDetector.onTouchEvent(event);
-                }
             }
         }
         preX = curX;
@@ -618,73 +483,6 @@ public class SketchView extends View {
             Log.e(scaleFactor + "", scaleFactor + "");
             curPhotoRecord.matrix.postScale(scaleFactor, scaleFactor, photoCorners[8], photoCorners[9]);
         }
-    }
-
-    public void onRotateAction(PhotoRecord record) {
-        float[] corners = calculateCorners(record);
-        //放大
-        //目前触摸点与图片显示中心距离,curX*drawDensity为还原缩小密度点数值
-        float a = (float) Math.sqrt(Math.pow(curX * drawDensity - corners[8], 2) + Math.pow(curY * drawDensity - corners[9], 2));
-        //目前上次旋转图标与图片显示中心距离
-        float b = (float) Math.sqrt(Math.pow(corners[4] - corners[0], 2) + Math.pow(corners[5] - corners[1], 2)) / 2;
-//        Log.e(TAG, "onRotateAction: a=" + a + ";b=" + b);
-        //设置Matrix缩放参数
-        double photoLen = Math.sqrt(Math.pow(record.photoRectSrc.width(), 2) + Math.pow(record.photoRectSrc.height(), 2));
-        if (a >= photoLen / 2 * SCALE_MIN && a >= SCALE_MIN_LEN && a <= photoLen / 2 * SCALE_MAX) {
-            //这种计算方法可以保持旋转图标坐标与触摸点同步缩放
-            float scale = a / b;
-            record.matrix.postScale(scale, scale, corners[8], corners[9]);
-        }
-
-        //旋转
-        //根据移动坐标的变化构建两个向量，以便计算两个向量角度.
-        PointF preVector = new PointF();
-        PointF curVector = new PointF();
-        preVector.set((preX * drawDensity - corners[8]), preY * drawDensity - corners[9]);//旋转后向量
-        curVector.set(curX * drawDensity - corners[8], curY * drawDensity - corners[9]);//旋转前向量
-        //计算向量长度
-        double preVectorLen = getVectorLength(preVector);
-        double curVectorLen = getVectorLength(curVector);
-        //计算两个向量的夹角.
-        double cosAlpha = (preVector.x * curVector.x + preVector.y * curVector.y)
-                / (preVectorLen * curVectorLen);
-        //由于计算误差，可能会带来略大于1的cos，例如
-        if (cosAlpha > 1.0f) {
-            cosAlpha = 1.0f;
-        }
-        //本次的角度已经计算出来。
-        double dAngle = Math.acos(cosAlpha) * 180.0 / Math.PI;
-        // 判断顺时针和逆时针.
-        //判断方法其实很简单，这里的v1v2其实相差角度很小的。
-        //先转换成单位向量
-        preVector.x /= preVectorLen;
-        preVector.y /= preVectorLen;
-        curVector.x /= curVectorLen;
-        curVector.y /= curVectorLen;
-        //作curVector的逆时针垂直向量。
-        PointF verticalVec = new PointF(curVector.y, -curVector.x);
-
-        //判断这个垂直向量和v1的点积，点积>0表示俩向量夹角锐角。=0表示垂直，<0表示钝角
-        float vDot = preVector.x * verticalVec.x + preVector.y * verticalVec.y;
-        if (vDot > 0) {
-            //v2的逆时针垂直向量和v1是锐角关系，说明v1在v2的逆时针方向。
-        } else {
-            dAngle = -dAngle;
-        }
-        record.matrix.postRotate((float) dAngle, corners[8], corners[9]);
-    }
-
-    /**
-     * 获取p1到p2的线段的长度
-     *
-     * @return
-     */
-    public double getVectorLength(PointF vector) {
-        return Math.sqrt(vector.x * vector.x + vector.y * vector.y);
-    }
-
-    public void onDragAction(float distanceX, float distanceY) {
-        curPhotoRecord.matrix.postTranslate((int) distanceX, (int) distanceY);
     }
 
     public void touch_up() {

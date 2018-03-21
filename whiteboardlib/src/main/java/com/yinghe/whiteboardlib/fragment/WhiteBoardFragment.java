@@ -100,9 +100,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     ImageView btn_eraser;//橡皮擦
     ImageView btn_undo;//撤销
     ImageView btn_redo;//取消撤销
-    ImageView btn_photo;//加载图片
     ImageView btn_background;//背景图片
-    ImageView btn_drag;//拖拽
     ImageView btn_save;//保存
     ImageView btn_empty;//清空
     ImageView btn_send;//推送
@@ -200,18 +198,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         mSketchView.setEditMode(SketchView.EDIT_STROKE);
     }
 
-    /**
-     * show 新增图片到当前白板
-     * @param imgPath 新增的图片路径
-     * @author TangentLu
-     * create at 16/6/21 下午3:42
-     */
-    public void addPhotoByPath(String imgPath) {
-        showSketchView(true);
-        mSketchView.addPhotoByPath(imgPath);
-        mSketchView.setEditMode(SketchView.EDIT_PHOTO);//切换图片编辑模式
-    }
-
 
     /**
      * show 获取当前白板的BitMap
@@ -298,7 +284,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
             @Override
             public void onSelectCallback(SketchData sketchData) {
                 mSketchView.updateSketchData(sketchData);
-                mSketchView.setEditMode(SketchView.EDIT_PHOTO);//切换图片编辑模式
                 showSketchView(true);
             }
         });
@@ -530,9 +515,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         btn_eraser = (ImageView) view.findViewById(R.id.btn_eraser);
         btn_undo = (ImageView) view.findViewById(R.id.btn_undo);
         btn_redo = (ImageView) view.findViewById(R.id.btn_redo);
-        btn_photo = (ImageView) view.findViewById(R.id.btn_photo);
         btn_background = (ImageView) view.findViewById(R.id.btn_background);
-        btn_drag = (ImageView) view.findViewById(R.id.btn_drag);
         btn_save = (ImageView) view.findViewById(R.id.btn_save);
         btn_empty = (ImageView) view.findViewById(R.id.btn_empty);
         btn_send = (ImageView) view.findViewById(R.id.btn_send);
@@ -553,9 +536,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         btn_redo.setOnClickListener(this);
         btn_empty.setOnClickListener(this);
         btn_save.setOnClickListener(this);
-        btn_photo.setOnClickListener(this);
         btn_background.setOnClickListener(this);
-        btn_drag.setOnClickListener(this);
         btn_send.setOnClickListener(this);
         btn_persistence.setOnClickListener(this);
         btn_recover.setOnClickListener(this);
@@ -710,13 +691,8 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
             } else {
                 showSaveDialog();
             }
-        } else if (id == R.id.btn_photo) {
-            startMultiImageSelector(REQUEST_IMAGE);
-        } else if (id == R.id.btn_background) {
+        }else if (id == R.id.btn_background) {
             startMultiImageSelector(REQUEST_BACKGROUND);
-        } else if (id == R.id.btn_drag) {
-            mSketchView.setEditMode(SketchView.EDIT_PHOTO);
-            showBtn(btn_drag);
         } else if (id == R.id.btn_send) {
             if (sendBtnCallback != null) {
                 new Thread(new Runnable() {
@@ -775,21 +751,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE) {
-            if (resultCode == getActivity().RESULT_OK) {
-                mSelectPath = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                String path = "";
-                if (mSelectPath.size() == 1) {
-                    path = mSelectPath.get(0);
-                } else if (mSelectPath == null || mSelectPath.size() == 0) {
-                    Toast.makeText(getActivity(), "图片加载失败,请重试!", Toast.LENGTH_LONG).show();
-                }
-                //加载图片
-                mSketchView.addPhotoByPath(path);
-                mSketchView.setEditMode(SketchView.EDIT_PHOTO);
-                showBtn(btn_drag);
-            }
-        } else if (requestCode == REQUEST_BACKGROUND) {//设置背景成功
+         if (requestCode == REQUEST_BACKGROUND) {//设置背景成功
             if (resultCode == getActivity().RESULT_OK) {
                 mSelectPath = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
                 String path = "";
@@ -898,7 +860,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     private void showBtn(ImageView iv) {
         btn_eraser.setAlpha(BTN_ALPHA);
         btn_stroke.setAlpha(BTN_ALPHA);
-        btn_drag.setAlpha(BTN_ALPHA);
         iv.setAlpha(1f);
     }
 
