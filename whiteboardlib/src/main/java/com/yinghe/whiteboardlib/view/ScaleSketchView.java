@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-import com.yinghe.whiteboardlib.Utils.TouchEventUtil;
+import com.yinghe.whiteboardlib.utils.TouchEventUtil;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
 import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;

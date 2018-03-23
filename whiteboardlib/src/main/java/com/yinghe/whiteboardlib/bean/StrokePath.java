@@ -2,7 +2,7 @@ package com.yinghe.whiteboardlib.bean;
 
 import android.graphics.Path;
 
-import com.yinghe.whiteboardlib.Utils.MLog;
+import com.yinghe.whiteboardlib.utils.MLog;
 
 import java.util.ArrayList;
 

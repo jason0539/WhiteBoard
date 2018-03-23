@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.yinghe.testwb.R;
 import com.yinghe.testwb.util.UtilThread;
-import com.yinghe.whiteboardlib.Utils.MLog;
+import com.yinghe.whiteboardlib.utils.MLog;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
 import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
 import com.yinghe.whiteboardlib.persistence.TransUtils;

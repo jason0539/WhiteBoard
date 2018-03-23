@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yinghe.whiteboardlib.Utils.PaintUtils;
+import com.yinghe.whiteboardlib.utils.PaintUtils;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokePath;
 import com.yinghe.whiteboardlib.bean.StrokePoint;

@@ -39,11 +39,11 @@ import android.widget.Toast;
 
 import com.yinghe.whiteboardlib.MultiImageSelector;
 import com.yinghe.whiteboardlib.R;
-import com.yinghe.whiteboardlib.Utils.BitmapUtils;
-import com.yinghe.whiteboardlib.Utils.FileUtils;
-import com.yinghe.whiteboardlib.Utils.MLog;
-import com.yinghe.whiteboardlib.Utils.ScreenUtils;
-import com.yinghe.whiteboardlib.Utils.TimeUtils;
+import com.yinghe.whiteboardlib.utils.BitmapUtils;
+import com.yinghe.whiteboardlib.utils.FileUtils;
+import com.yinghe.whiteboardlib.utils.MLog;
+import com.yinghe.whiteboardlib.utils.ScreenUtils;
+import com.yinghe.whiteboardlib.utils.TimeUtils;
 import com.yinghe.whiteboardlib.persistence.TransUtils;
 import com.yinghe.whiteboardlib.adapter.SketchDataGridAdapter;
 import com.yinghe.whiteboardlib.bean.SketchData;

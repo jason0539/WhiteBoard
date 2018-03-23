@@ -39,17 +39,17 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
-import com.yinghe.whiteboardlib.Utils.BitmapUtils;
-import com.yinghe.whiteboardlib.Utils.MLog;
-import com.yinghe.whiteboardlib.Utils.MathUtil;
-import com.yinghe.whiteboardlib.Utils.PaintUtils;
-import com.yinghe.whiteboardlib.Utils.ScreenUtils;
+import com.yinghe.whiteboardlib.utils.BitmapUtils;
+import com.yinghe.whiteboardlib.utils.MLog;
+import com.yinghe.whiteboardlib.utils.MathUtil;
+import com.yinghe.whiteboardlib.utils.PaintUtils;
+import com.yinghe.whiteboardlib.utils.ScreenUtils;
 import com.yinghe.whiteboardlib.bean.PhotoRecord;
 import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokePath;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
 
-import static com.yinghe.whiteboardlib.Utils.BitmapUtils.createBitmapThumbnail;
+import static com.yinghe.whiteboardlib.utils.BitmapUtils.createBitmapThumbnail;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_CIRCLE;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_DRAW;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_ERASER;
