@@ -64,12 +64,11 @@ public class SketchView extends View {
     public static final int DEFAULT_STROKE_SIZE = 3;
     public static final int DEFAULT_STROKE_ALPHA = 100;
     public static final int DEFAULT_ERASER_SIZE = 50;
-    public static final float TOUCH_TOLERANCE = 4;
+    public static final float TOUCH_TOLERANCE = 10;
     public static final int ACTION_NONE = 0;
     public static float SCALE_MAX = 4.0f;
     public static float SCALE_MIN = 0.2f;
     public static float SCALE_MIN_LEN;
-    public static float MULTI_POINTER_THRESH = 10;//两指间距阈值，低于该值认为是误触
     public Paint boardPaint;
 
     public SketchData curSketchData;
@@ -89,7 +88,7 @@ public class SketchView extends View {
     public float downX, downY, preX, preY, curX, curY;
     public int mWidth, mHeight;
     public Context mContext;
-    public boolean needCheckThresh = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
+    public boolean needCheckTolerance = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
     /**
      * 缩放手势
      */
@@ -361,7 +360,7 @@ public class SketchView extends View {
     public void touch_down() {
         downX = curX;
         downY = curY;
-        needCheckThresh = true;
+        needCheckTolerance = true;
         if (curSketchData.editMode == EDIT_STROKE) {
             //进行新的绘制时，清空redo栈（如果要保留，注释这行即可）
             curSketchData.strokeRedoList.clear();
@@ -406,9 +405,9 @@ public class SketchView extends View {
     }
 
     public void touch_move(MotionEvent event) {
-        if (!needCheckThresh ||
-                (needCheckThresh && MathUtil.rectDiagonal(curX-downX, curY- downY) > MULTI_POINTER_THRESH)) {
-            needCheckThresh = false;
+        if (!needCheckTolerance ||
+                (needCheckTolerance && MathUtil.rectDiagonal(curX-downX, curY- downY) > TOUCH_TOLERANCE)) {
+            needCheckTolerance = false;
             if (curSketchData.editMode == EDIT_STROKE) {
                 if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
                     strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
