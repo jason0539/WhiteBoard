@@ -10,8 +10,8 @@ public class StrokeRecordPersistence {
     String path;
     //线条宽度
     float width;
-    //线条颜色，二进制
-    int color;
+    //线条颜色，16进制
+    String color;
     //线段类型,0曲线，1圆，2线段，3矩形
     int type;
 
@@ -31,11 +31,11 @@ public class StrokeRecordPersistence {
         this.width = width;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

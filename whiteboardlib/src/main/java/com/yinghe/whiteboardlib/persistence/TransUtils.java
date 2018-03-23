@@ -1,5 +1,6 @@
 package com.yinghe.whiteboardlib.persistence;
 
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextUtils;
 
@@ -61,7 +62,7 @@ public class TransUtils {
         strokeRecordPersistence.setType(type);
         //画笔
         Paint paint = strokeRecord.paint;
-        strokeRecordPersistence.setColor(paint.getColor());
+        strokeRecordPersistence.setColor(Integer.toHexString(paint.getColor()));
         strokeRecordPersistence.setWidth(paint.getStrokeWidth());
         //路线
         StrokePath path = strokeRecord.path;
@@ -80,7 +81,7 @@ public class TransUtils {
         StrokeRecord strokeRecord = new StrokeRecord(recordPersistenceBean.getType());
         //画笔
         Paint paint = PaintUtils.createDefaultStrokePaint();
-        paint.setColor(recordPersistenceBean.getColor());
+        paint.setColor(Color.parseColor(recordPersistenceBean.getColor()));
         paint.setStrokeWidth(recordPersistenceBean.getWidth());
         strokeRecord.paint = paint;
         //路线
