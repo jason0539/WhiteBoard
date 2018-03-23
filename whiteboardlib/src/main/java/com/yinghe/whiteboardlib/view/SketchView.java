@@ -23,7 +23,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -67,16 +66,13 @@ public class SketchView extends View {
     public static final int DEFAULT_ERASER_SIZE = 50;
     public static final float TOUCH_TOLERANCE = 4;
     public static final int ACTION_NONE = 0;
-    //    public int curSketchData.editMode = EDIT_STROKE;
     public static float SCALE_MAX = 4.0f;
     public static float SCALE_MIN = 0.2f;
     public static float SCALE_MIN_LEN;
     public static float MULTI_POINTER_THRESH = 10;//两指间距阈值，低于该值认为是误触
-    public final String TAG = getClass().getSimpleName();
     public Paint boardPaint;
 
     public SketchData curSketchData;
-    //    public Bitmap curSketchData.backgroundBM;
     public Rect backgroundSrcRect = new Rect();
     public Rect backgroundDstRect = new Rect();
     public StrokeRecord curStrokeRecord;
@@ -92,9 +88,6 @@ public class SketchView extends View {
     public Paint strokePaint;
     public float downX, downY, preX, preY, curX, curY;
     public int mWidth, mHeight;
-    //    public List<PhotoRecord> curSketchData.photoRecordList;
-//    public List<StrokeRecord> curSketchData.strokeRecordList;
-//    public List<StrokeRecord> curSketchData.strokeRedoList;
     public Context mContext;
     public boolean needCheckThresh = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
     /**
@@ -142,8 +135,6 @@ public class SketchView extends View {
         return curSketchData.strokeType;
     }
 
-//    public int curSketchData.strokeType = StrokeRecord.STROKE_TYPE_DRAW;
-
     public void setStrokeType(int strokeType) {
         this.curSketchData.strokeType = strokeType;
     }
@@ -166,9 +157,6 @@ public class SketchView extends View {
     }
 
     public void initParams(Context context) {
-
-//        setFocusable(true);
-//        setFocusableInTouchMode(true);
         setBackgroundColor(Color.WHITE);
 
         strokePaint = PaintUtils.createDefaultStrokePaint();
@@ -261,24 +249,13 @@ public class SketchView extends View {
 
     public void drawBackground(Canvas canvas) {
         if (curSketchData.backgroundBM != null) {
-//            Rect dstRect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
-//            canvas.drawBitmap(curSketchData.backgroundBM, backgroundSrcRect, backgroundDstRect, null);
             Matrix matrix = new Matrix();
             float wScale = (float) canvas.getWidth() / curSketchData.backgroundBM.getWidth();
             float hScale = (float) canvas.getHeight() / curSketchData.backgroundBM.getHeight();
             matrix.postScale(wScale, hScale);
             canvas.drawBitmap(curSketchData.backgroundBM, matrix, null);
-//            canvas.drawBitmap(curSketchData.backgroundBM, backgroundSrcRect, dstRect, null);
-            Log.d(TAG, "drawBackground:src= " + backgroundSrcRect.toString() + ";dst=" + backgroundDstRect.toString());
         } else {
-//            try {
-//                setBackgroundByPath("background/bg_yellow_board.png");
-//            canvas.drawColor(Color.rgb(246, 246, 246));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            canvas.drawColor(Color.rgb(246, 246, 246));
             canvas.drawColor(Color.rgb(239, 234, 224));
-//            }
         }
     }
 
@@ -351,17 +328,6 @@ public class SketchView extends View {
         p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         temptCanvas.drawPaint(p);
         p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-    }
-
-    //绘制图像边线（由于图形旋转或不一定是矩形，所以用Path绘制边线）
-    public void drawBoard(Canvas canvas, float[] photoCorners) {
-        Path photoBorderPath = new Path();
-        photoBorderPath.moveTo(photoCorners[0], photoCorners[1]);
-        photoBorderPath.lineTo(photoCorners[2], photoCorners[3]);
-        photoBorderPath.lineTo(photoCorners[4], photoCorners[5]);
-        photoBorderPath.lineTo(photoCorners[6], photoCorners[7]);
-        photoBorderPath.lineTo(photoCorners[0], photoCorners[1]);
-        canvas.drawPath(photoBorderPath, boardPaint);
     }
 
     public float[] calculateCorners(PhotoRecord record) {
@@ -704,8 +670,7 @@ public class SketchView extends View {
     }
 
     public interface OnDrawChangedListener {
-
-        public void onDrawChanged();
+        void onDrawChanged();
     }
 
     public interface OnStrokeRecordFinishListener {
