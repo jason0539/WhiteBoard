@@ -96,7 +96,6 @@ public class SketchView extends View {
 //    public List<StrokeRecord> curSketchData.strokeRecordList;
 //    public List<StrokeRecord> curSketchData.strokeRedoList;
     public Context mContext;
-    public int drawDensity = 1;//绘制密度,数值越高图像质量越低、性能越好
     public boolean needCheckThresh = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
     /**
      * 缩放手势
@@ -224,8 +223,8 @@ public class SketchView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
-        curX = ((event.getX()) / drawDensity - mOffset.x)/mScale;
-        curY = ((event.getY()) / drawDensity - mOffset.y)/mScale;
+        curX = (event.getX() - mOffset.x)/mScale;
+        curY = (event.getY() - mOffset.y)/mScale;
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_POINTER_DOWN:
                 MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
@@ -298,12 +297,12 @@ public class SketchView extends View {
             }
             //新建一个临时画布，以便橡皮擦生效
             if (tempBitmap == null) {
-                tempBitmap = Bitmap.createBitmap(getWidth() / drawDensity, getHeight() / drawDensity, Bitmap.Config.ARGB_4444);
+                tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_4444);
                 tempCanvas = new Canvas(tempBitmap);
             }
             //新建一个临时画布，以便保存过多的画笔
             if (tempHoldBitmap == null) {
-                tempHoldBitmap = Bitmap.createBitmap(getWidth() / drawDensity, getHeight() / drawDensity, Bitmap.Config.ARGB_4444);
+                tempHoldBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_4444);
                 tempHoldCanvas = new Canvas(tempHoldBitmap);
             }
             //节省性能把10笔以前的全都画(保存)进固化层(tempHoldBitmap),移除record历史
