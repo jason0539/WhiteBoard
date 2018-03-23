@@ -226,14 +226,6 @@ public class SketchView extends View {
         //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
         curX = ((event.getX()) / drawDensity - mOffset.x)/mScale;
         curY = ((event.getY()) / drawDensity - mOffset.y)/mScale;
-        int toolType = event.getToolType(0);
-//        //检测到手指点击自动进入拖动图片模式
-//        if (toolType == MotionEvent.TOOL_TYPE_FINGER&&curSketchData.editMode == EDIT_STROKE) {
-//            curSketchData.editMode = EDIT_PHOTO;
-//        } else if (toolType == MotionEvent.TOOL_TYPE_STYLUS){//检测到手写板开始绘画则自动进入绘画模式
-//            curSketchData.editMode = EDIT_STROKE;
-//        }
-//        Log.d(getClass().getSimpleName(), "onTouch======" + toolType);
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_POINTER_DOWN:
                 MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
