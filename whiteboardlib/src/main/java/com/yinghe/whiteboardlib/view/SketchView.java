@@ -74,6 +74,7 @@ public class SketchView extends View {
     public SketchData curSketchData;
     public Rect backgroundSrcRect = new Rect();
     public Rect backgroundDstRect = new Rect();
+    public int defaultBgColor = Color.WHITE;
     public StrokeRecord curStrokeRecord;
     public PhotoRecord curPhotoRecord;
     public int actionMode;
@@ -254,7 +255,7 @@ public class SketchView extends View {
             matrix.postScale(wScale, hScale);
             canvas.drawBitmap(curSketchData.backgroundBM, matrix, null);
         } else {
-            canvas.drawColor(Color.rgb(239, 234, 224));
+            canvas.drawColor(defaultBgColor);
         }
     }
 
