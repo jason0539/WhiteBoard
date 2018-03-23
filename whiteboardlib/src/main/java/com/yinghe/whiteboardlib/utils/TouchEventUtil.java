@@ -1,4 +1,4 @@
-package com.yinghe.whiteboardlib.Utils;
+package com.yinghe.whiteboardlib.utils;
 
 import android.graphics.PointF;
 import android.view.MotionEvent;

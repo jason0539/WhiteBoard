@@ -1,4 +1,4 @@
-package com.yinghe.whiteboardlib.Utils;
+package com.yinghe.whiteboardlib.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

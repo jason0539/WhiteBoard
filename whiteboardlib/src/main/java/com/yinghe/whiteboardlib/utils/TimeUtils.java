@@ -1,4 +1,4 @@
-package com.yinghe.whiteboardlib.Utils;
+package com.yinghe.whiteboardlib.utils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
