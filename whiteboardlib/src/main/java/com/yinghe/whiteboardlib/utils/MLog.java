@@ -9,7 +9,7 @@ import android.util.Log;
 public class MLog {
     public static final String TAG = "LZH_SKETCH";
 
-    private static boolean DEBUG = true;
+    public static boolean DEBUG = true;
 
     public static final String TAG_SOCKET = "TAG_SOCKET";
     public static final String TAG_DRAW = "TAG_DRAW";
