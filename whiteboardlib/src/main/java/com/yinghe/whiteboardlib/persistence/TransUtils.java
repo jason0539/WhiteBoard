@@ -56,27 +56,27 @@ public class TransUtils {
      * 把一笔轨迹转成string
      */
     public static final String transStrokeRecordToString(StrokeRecord strokeRecord) {
-        StrokeRecordPersistence strokeRecordPersistence = new StrokeRecordPersistence();
+        WhiteBoardData whiteBoardData = new WhiteBoardData();
         //笔迹类型
         int type = strokeRecord.type;
-        strokeRecordPersistence.setType(type);
+        whiteBoardData.setType(type);
         //画笔
         Paint paint = strokeRecord.paint;
-        strokeRecordPersistence.setColor("#"+Integer.toHexString(paint.getColor()));
-        strokeRecordPersistence.setWidth(paint.getStrokeWidth());
+        whiteBoardData.setColor("#"+Integer.toHexString(paint.getColor()));
+        whiteBoardData.setWidth(paint.getStrokeWidth());
         //路线
         StrokePath path = strokeRecord.path;
         String strokePathString = transStrokePathToString(path);
-        strokeRecordPersistence.setPath(strokePathString);
+        whiteBoardData.setPath(strokePathString);
 
-        return JSONObject.toJSONString(strokeRecordPersistence);
+        return JSONObject.toJSONString(whiteBoardData);
     }
 
     /**
      * 从string恢复一笔轨迹
      */
     public static StrokeRecord transStringToStrokeRecord(String recordString) {
-        StrokeRecordPersistence recordPersistenceBean = JSON.parseObject(recordString, StrokeRecordPersistence.class);
+        WhiteBoardData recordPersistenceBean = JSON.parseObject(recordString, WhiteBoardData.class);
         //笔迹类型
         StrokeRecord strokeRecord = new StrokeRecord(recordPersistenceBean.getType());
         //画笔

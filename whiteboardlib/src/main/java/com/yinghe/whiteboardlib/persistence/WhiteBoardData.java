@@ -2,9 +2,10 @@ package com.yinghe.whiteboardlib.persistence;
 
 /**
  * Created by liuzhenhui on 2018/3/14.
+ * 持久化保存的白板数据结构
  */
 
-public class StrokeRecordPersistence {
+public class WhiteBoardData {
 
     //坐标数组，用坐标内用逗号隔开,坐标间用分号隔开,例如:1,2;2,3
     String path;
