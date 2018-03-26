@@ -41,10 +41,10 @@ import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokePath;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
 import com.yinghe.whiteboardlib.utils.BitmapUtils;
+import com.yinghe.whiteboardlib.utils.DensityUtil;
 import com.yinghe.whiteboardlib.utils.MLog;
 import com.yinghe.whiteboardlib.utils.MathUtil;
 import com.yinghe.whiteboardlib.utils.PaintUtils;
-import com.yinghe.whiteboardlib.utils.ScreenUtils;
 
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_CIRCLE;
 import static com.yinghe.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_DRAW;
@@ -134,10 +134,10 @@ public class SketchView extends View {
 
         boardPaint = new Paint();
         boardPaint.setColor(Color.GRAY);
-        boardPaint.setStrokeWidth(ScreenUtils.dip2px(mContext, 0.8f));
+        boardPaint.setStrokeWidth(DensityUtil.dip2px(mContext, 0.8f));
         boardPaint.setStyle(Paint.Style.STROKE);
 
-        SCALE_MIN_LEN = ScreenUtils.dip2px(context, 20);
+        SCALE_MIN_LEN = DensityUtil.dip2px(context, 20);
     }
 
     public void setStrokeAlpha(int mAlpha) {
@@ -421,7 +421,7 @@ public class SketchView extends View {
 
     @NonNull
     public Bitmap getThumbnailResultBitmap() {
-        return createBitmapThumbnail(getResultBitmap(), true, ScreenUtils.dip2px(mContext, 200), ScreenUtils.dip2px(mContext, 200));
+        return createBitmapThumbnail(getResultBitmap(), true, DensityUtil.dip2px(mContext, 200), DensityUtil.dip2px(mContext, 200));
     }
 
     /*

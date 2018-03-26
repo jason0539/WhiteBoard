@@ -37,7 +37,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.yinghe.whiteboardlib.utils.DensityUtil;
-import com.yinghe.whiteboardlib.utils.FileUtils;
+import com.yinghe.testwb.demo.util.FileUtils;
 import com.yinghe.testwb.demo.adapter.FolderAdapter;
 import com.yinghe.testwb.demo.adapter.ImageGridAdapter;
 import com.yinghe.testwb.demo.bean.Folder;

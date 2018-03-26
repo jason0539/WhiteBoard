@@ -1,4 +1,4 @@
-package com.yinghe.whiteboardlib.utils;
+package com.yinghe.testwb.demo.util;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yinghe.testwb.R;
-import com.yinghe.whiteboardlib.utils.ScreenUtils;
+import com.yinghe.testwb.demo.util.ScreenUtils;
 import com.yinghe.whiteboardlib.bean.SketchData;
 
 import java.util.List;
