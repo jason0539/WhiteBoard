@@ -208,12 +208,12 @@ public class SketchView extends View {
     }
 
     public void drawBackground(Canvas canvas) {
-        if (curSketchData.backgroundBM != null) {
+        if (curSketchData.backgroundBitmap != null) {
             Matrix matrix = new Matrix();
-            float wScale = (float) canvas.getWidth() / curSketchData.backgroundBM.getWidth();
-            float hScale = (float) canvas.getHeight() / curSketchData.backgroundBM.getHeight();
+            float wScale = (float) canvas.getWidth() / curSketchData.backgroundBitmap.getWidth();
+            float hScale = (float) canvas.getHeight() / curSketchData.backgroundBitmap.getHeight();
             matrix.postScale(wScale, hScale);
-            canvas.drawBitmap(curSketchData.backgroundBM, matrix, null);
+            canvas.drawBitmap(curSketchData.backgroundBitmap, matrix, null);
         } else {
             canvas.drawColor(defaultBgColor);
         }
@@ -457,10 +457,10 @@ public class SketchView extends View {
     }
 
     public void erase() {
-        if (curSketchData.backgroundBM != null && !curSketchData.backgroundBM.isRecycled()) {
+        if (curSketchData.backgroundBitmap != null && !curSketchData.backgroundBitmap.isRecycled()) {
             // 回收并且置为null
-            curSketchData.backgroundBM.recycle();
-            curSketchData.backgroundBM = null;
+            curSketchData.backgroundBitmap.recycle();
+            curSketchData.backgroundBitmap = null;
         }
         curSketchData.strokeRecordList.clear();
         curSketchData.strokeRedoList.clear();
@@ -493,8 +493,8 @@ public class SketchView extends View {
     }
 
     public void setBackgroundByBitmap(Bitmap sampleBM) {
-        curSketchData.backgroundBM = sampleBM;
-        backgroundSrcRect = new Rect(0, 0, curSketchData.backgroundBM.getWidth(), curSketchData.backgroundBM.getHeight());
+        curSketchData.backgroundBitmap = sampleBM;
+        backgroundSrcRect = new Rect(0, 0, curSketchData.backgroundBitmap.getWidth(), curSketchData.backgroundBitmap.getHeight());
         backgroundDstRect = new Rect(0, 0, mWidth, mHeight);
         invalidate();
     }

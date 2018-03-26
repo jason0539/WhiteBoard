@@ -13,14 +13,14 @@ import java.util.List;
 public class SketchData {
     public List<StrokeRecord> strokeRecordList;
     public List<StrokeRecord> strokeRedoList;
-    public Bitmap backgroundBM;
+    public Bitmap backgroundBitmap;
     public int strokeType;
     public int editMode;
 
     public SketchData() {
         strokeRecordList = new ArrayList<>();
         strokeRedoList = new ArrayList<>();
-        backgroundBM = null;
+        backgroundBitmap = null;
         strokeType = StrokeRecord.STROKE_TYPE_DRAW;
         editMode = SketchView.EDIT_STROKE;
     }
