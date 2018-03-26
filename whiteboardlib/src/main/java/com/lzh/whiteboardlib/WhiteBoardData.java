@@ -1,4 +1,4 @@
-package com.lzh.whiteboardlib.persistence;
+package com.lzh.whiteboardlib;
 
 /**
  * Created by liuzhenhui on 2018/3/14.

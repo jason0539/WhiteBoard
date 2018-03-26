@@ -1,4 +1,4 @@
-package com.lzh.whiteboardlib.persistence;
+package com.lzh.whiteboardlib;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,7 +11,6 @@ import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokePath;
 import com.lzh.whiteboardlib.bean.StrokePoint;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
-import com.lzh.whiteboardlib.SketchViewStatusHolder;
 
 import java.util.ArrayList;
 import java.util.List;

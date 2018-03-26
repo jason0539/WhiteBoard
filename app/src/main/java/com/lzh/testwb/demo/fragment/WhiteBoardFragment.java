@@ -39,7 +39,7 @@ import com.lzh.testwb.demo.util.FileUtils;
 import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.testwb.demo.util.ScreenUtils;
 import com.lzh.testwb.demo.util.TimeUtils;
-import com.lzh.whiteboardlib.persistence.TransUtils;
+import com.lzh.whiteboardlib.TransUtils;
 import com.lzh.testwb.demo.adapter.SketchDataGridAdapter;
 import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokeRecord;

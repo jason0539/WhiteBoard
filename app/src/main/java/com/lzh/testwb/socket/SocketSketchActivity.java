@@ -13,7 +13,7 @@ import com.lzh.testwb.demo.util.UtilThread;
 import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
 import com.lzh.testwb.demo.fragment.WhiteBoardFragment;
-import com.lzh.whiteboardlib.persistence.TransUtils;
+import com.lzh.whiteboardlib.TransUtils;
 import com.lzh.whiteboardlib.SketchView;
 
 /**
