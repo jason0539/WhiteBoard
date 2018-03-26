@@ -6,12 +6,12 @@ import android.graphics.RectF;
 import android.text.TextPaint;
 
 public class StrokeRecord {
-    public static final int STROKE_TYPE_ERASER = 1;
-    public static final int STROKE_TYPE_DRAW = 2;
-    public static final int STROKE_TYPE_LINE = 3;
-    public static final int STROKE_TYPE_CIRCLE = 4;
-    public static final int STROKE_TYPE_RECTANGLE = 5;
-    public static final int STROKE_TYPE_TEXT = 6;
+    public static final int STROKE_TYPE_ERASER = 1;//橡皮
+    public static final int STROKE_TYPE_DRAW = 2;//曲线
+    public static final int STROKE_TYPE_LINE = 3;//直线
+    public static final int STROKE_TYPE_CIRCLE = 4;//圆形
+    public static final int STROKE_TYPE_RECTANGLE = 5;//矩形
+    public static final int STROKE_TYPE_TEXT = 6;//文字
 
     public int type;//记录类型
     public Paint paint;//笔类
