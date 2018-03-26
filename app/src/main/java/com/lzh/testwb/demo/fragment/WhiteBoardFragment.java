@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,18 +30,20 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import com.lzh.testwb.demo.MultiImageSelector;
+import com.jph.takephoto.app.TakePhotoFragment;
+import com.jph.takephoto.model.TResult;
 import com.lzh.testwb.R;
-import com.lzh.whiteboardlib.utils.BitmapUtils;
+import com.lzh.testwb.demo.MultiImageSelector;
 import com.lzh.testwb.demo.util.FileUtils;
-import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.testwb.demo.util.ScreenUtils;
 import com.lzh.testwb.demo.util.TimeUtils;
+import com.lzh.whiteboardlib.ScaleSketchView;
+import com.lzh.whiteboardlib.SketchView;
 import com.lzh.whiteboardlib.TransUtils;
 import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
-import com.lzh.whiteboardlib.ScaleSketchView;
-import com.lzh.whiteboardlib.SketchView;
+import com.lzh.whiteboardlib.utils.BitmapUtils;
+import com.lzh.whiteboardlib.utils.MLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,7 +57,7 @@ import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_LINE;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_RECTANGLE;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
 
-public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawChangedListener, View.OnClickListener {
+public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.OnDrawChangedListener, View.OnClickListener {
 
     final String TAG = getClass().getSimpleName();
 
@@ -586,7 +587,8 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
                 saveInUI(TimeUtils.getNowTimeString() + ".png");
             }
         }else if (id == R.id.btn_background) {
-            startMultiImageSelector(REQUEST_BACKGROUND);
+//            startMultiImageSelector(REQUEST_BACKGROUND);
+            getTakePhoto().onPickFromDocuments();
         } else if (id == R.id.btn_send) {
             if (sendBtnCallback != null) {
                 new Thread(new Runnable() {
@@ -609,6 +611,22 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
             mSketchView.getSketchView().invalidate();
             MLog.d(MLog.TAG_SOCKET,"WhiteBoardFragment->onClick " + sketchDataString);
         }
+    }
+
+    @Override
+    public void takeSuccess(TResult result) {
+        super.takeSuccess(result);
+        showBackground(result.getImage().getOriginalPath());
+    }
+
+    @Override
+    public void takeFail(TResult result, String msg) {
+        super.takeFail(result, msg);
+    }
+
+    @Override
+    public void takeCancel() {
+        super.takeCancel();
     }
 
     private void startMultiImageSelector(int request) {
@@ -638,20 +656,11 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-         if (requestCode == REQUEST_BACKGROUND) {//设置背景成功
-            if (resultCode == getActivity().RESULT_OK) {
-                mSelectPath = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                String path = "";
-                if (mSelectPath.size() == 1) {
-                    path = mSelectPath.get(0);
-                } else if (mSelectPath == null || mSelectPath.size() == 0) {
-                    Toast.makeText(getActivity(), "图片加载失败,请重试!", Toast.LENGTH_LONG).show();
-                }
-                mSketchView.setBackgroundByPath(path);
-                Log.i("imgPath", path);
-                //加载图片设置画板背景
-            }
-        }
+        super.onActivityResult(requestCode, resultCode,data);
+    }
+
+    private void showBackground(String path) {
+        mSketchView.setBackgroundByPath(path);
     }
 
     private void showParamsPopupWindow(View anchor, int drawMode) {
