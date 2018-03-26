@@ -1,4 +1,4 @@
-package com.lzh.testwb.socket;
+package com.lzh.testwb;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -8,11 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.lzh.testwb.R;
-import com.lzh.testwb.demo.util.UtilThread;
+import com.lzh.testwb.socket.SocketTransceiver;
+import com.lzh.testwb.socket.TcpClient;
+import com.lzh.testwb.util.UtilThread;
 import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
-import com.lzh.testwb.demo.fragment.WhiteBoardFragment;
 import com.lzh.whiteboardlib.TransUtils;
 import com.lzh.whiteboardlib.SketchView;
 

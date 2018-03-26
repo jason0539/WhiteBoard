@@ -1,4 +1,4 @@
-package com.lzh.testwb.demo.fragment;
+package com.lzh.testwb;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,10 +32,9 @@ import android.widget.Toast;
 
 import com.jph.takephoto.app.TakePhotoFragment;
 import com.jph.takephoto.model.TResult;
-import com.lzh.testwb.R;
-import com.lzh.testwb.demo.util.FileUtils;
-import com.lzh.testwb.demo.util.ScreenUtils;
-import com.lzh.testwb.demo.util.TimeUtils;
+import com.lzh.testwb.util.FileUtils;
+import com.lzh.testwb.util.ScreenUtils;
+import com.lzh.testwb.util.TimeUtils;
 import com.lzh.whiteboardlib.ScaleSketchView;
 import com.lzh.whiteboardlib.SketchView;
 import com.lzh.whiteboardlib.TransUtils;

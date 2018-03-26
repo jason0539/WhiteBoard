@@ -1,4 +1,4 @@
-package com.lzh.testwb.demo.util;
+package com.lzh.testwb.util;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.lzh.testwb.demo.util;
+package com.lzh.testwb.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
