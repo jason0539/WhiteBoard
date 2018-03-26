@@ -11,7 +11,7 @@ import com.yinghe.whiteboardlib.bean.SketchData;
 import com.yinghe.whiteboardlib.bean.StrokePath;
 import com.yinghe.whiteboardlib.bean.StrokePoint;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
-import com.yinghe.whiteboardlib.view.SketchViewStatusHolder;
+import com.yinghe.whiteboardlib.SketchViewStatusHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class TransUtils {
         strokeRecordPersistence.setType(type);
         //画笔
         Paint paint = strokeRecord.paint;
-        strokeRecordPersistence.setColor(Integer.toHexString(paint.getColor()));
+        strokeRecordPersistence.setColor("#"+Integer.toHexString(paint.getColor()));
         strokeRecordPersistence.setWidth(paint.getStrokeWidth());
         //路线
         StrokePath path = strokeRecord.path;

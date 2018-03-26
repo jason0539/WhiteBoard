@@ -2,9 +2,8 @@ package com.yinghe.whiteboardlib.bean;
 
 import android.graphics.Bitmap;
 
-import com.yinghe.whiteboardlib.view.SketchView;
+import com.yinghe.whiteboardlib.SketchView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import java.util.List;
  * Created by ChiEr on 16/6/16.
  */
 public class SketchData {
-    public List<PhotoRecord> photoRecordList;
     public List<StrokeRecord> strokeRecordList;
     public List<StrokeRecord> strokeRedoList;
     public Bitmap thumbnailBM;//缩略图文件
@@ -22,7 +20,6 @@ public class SketchData {
 
     public SketchData() {
         strokeRecordList = new ArrayList<>();
-        photoRecordList = new ArrayList<>();
         strokeRedoList = new ArrayList<>();
         backgroundBM = null;
         thumbnailBM = null;

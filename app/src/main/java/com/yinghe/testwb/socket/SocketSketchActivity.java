@@ -12,9 +12,9 @@ import com.yinghe.testwb.R;
 import com.yinghe.testwb.util.UtilThread;
 import com.yinghe.whiteboardlib.utils.MLog;
 import com.yinghe.whiteboardlib.bean.StrokeRecord;
-import com.yinghe.whiteboardlib.fragment.WhiteBoardFragment;
+import com.yinghe.testwb.demo.fragment.WhiteBoardFragment;
 import com.yinghe.whiteboardlib.persistence.TransUtils;
-import com.yinghe.whiteboardlib.view.SketchView;
+import com.yinghe.whiteboardlib.SketchView;
 
 /**
  * Created by liuzhenhui on 2018/3/13.
