@@ -33,7 +33,6 @@ import android.widget.Toast;
 import com.jph.takephoto.app.TakePhotoFragment;
 import com.jph.takephoto.model.TResult;
 import com.lzh.testwb.R;
-import com.lzh.testwb.demo.MultiImageSelector;
 import com.lzh.testwb.demo.util.FileUtils;
 import com.lzh.testwb.demo.util.ScreenUtils;
 import com.lzh.testwb.demo.util.TimeUtils;
@@ -587,7 +586,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
                 saveInUI(TimeUtils.getNowTimeString() + ".png");
             }
         }else if (id == R.id.btn_background) {
-//            startMultiImageSelector(REQUEST_BACKGROUND);
             getTakePhoto().onPickFromDocuments();
         } else if (id == R.id.btn_send) {
             if (sendBtnCallback != null) {
@@ -627,24 +625,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     @Override
     public void takeCancel() {
         super.takeCancel();
-    }
-
-    private void startMultiImageSelector(int request) {
-        MultiImageSelector selector = MultiImageSelector.create(getActivity());
-        selector.showCamera(true);
-        selector.count(9);
-        selector.single();
-        selector.origin(mSelectPath);
-        Bundle boundsBundle = new Bundle();
-        Rect rect = new Rect();
-        mSketchView.getLocalVisibleRect(rect);
-        int[] boundsInts = new int[4];
-        //noinspection Range
-        mSketchView.getLocationInWindow(boundsInts);
-        boundsInts[1] -= ScreenUtils.getStatusBarHeight(activity);
-        boundsInts[2] = mSketchView.getWidth();
-        boundsInts[3] = mSketchView.getHeight();
-        selector.start(this, boundsInts, request);
     }
 
     public SketchView getSketchView() {
