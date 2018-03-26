@@ -11,18 +11,6 @@
         android:layout_above="@+id/controlLayout"
         android:background="#efeded">
 
-        <GridView
-            android:id="@+id/sketch_data_gv"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/sketch_gv_padding"
-            android:horizontalSpacing="@dimen/sketch_gv_padding"
-            android:verticalSpacing="@dimen/sketch_gv_padding"
-            android:numColumns="4" />
-
-        <!--<include layout="@layout/include_grid_view_layout" />-->
-
     </FrameLayout>
 
     <FrameLayout
@@ -41,11 +29,6 @@
             android:paddingLeft="@dimen/control_layout_padding"
             android:paddingRight="@dimen/control_layout_padding"
             android:paddingTop="@dimen/control_btn_padding">
-
-            <ImageView
-                android:id="@+id/btn_add"
-                style="@style/control_btn"
-                android:src="@drawable/ic_add_small" />
 
             <Button
                 android:id="@+id/btn_persistance"

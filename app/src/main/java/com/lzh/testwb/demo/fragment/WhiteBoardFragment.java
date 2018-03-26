@@ -90,7 +90,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
 
     View controlLayout;//控制布局
 
-    ImageView btn_add;//添加画板
     ImageView btn_stroke;//画笔
     ImageView btn_eraser;//橡皮擦
     ImageView btn_undo;//撤销
@@ -110,9 +109,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
 
     int strokeMode;//模式
     int strokeType;//模式
-
-    GridView sketchGV;
-    SketchDataGridAdapter sketchGVAdapter;
 
     int pupWindowsDPWidth = 300;//弹窗宽度，单位DP
     int strokePupWindowsDPHeight = 275;//画笔弹窗高度，单位DP
@@ -172,7 +168,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
      * show 设置当前白板的背景图片
      */
     public void setCurBackgroundByPath(String imgPath) {
-        showSketchView(true);
         mSketchView.setBackgroundByPath(imgPath);
     }
 
@@ -183,7 +178,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
      * create at 16/6/21 下午3:39
      */
     public void setNewBackgroundByPath(String imgPath) {
-        showSketchView(true);
         SketchData newSketchData = new SketchData();
         sketchDataList.add(newSketchData);
         mSketchView.updateSketchData(newSketchData);
@@ -246,7 +240,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         initDrawParams();//初始化绘画参数
         initPopupWindows();//初始化弹框
         initData();
-        initSketchGV();
         return rootView;
     }
 
@@ -254,37 +247,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         SketchData newSketchData = new SketchData();
         sketchDataList.add(newSketchData);
         mSketchView.setSketchData(newSketchData);
-    }
-
-    private void initSketchGV() {
-        sketchGVAdapter = new SketchDataGridAdapter(activity, sketchDataList, new SketchDataGridAdapter.OnActionCallback() {
-            @Override
-            public void onDeleteCallback(int position) {
-                sketchDataList.remove(position);
-                sketchGVAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onAddCallback() {
-                SketchData newSketchData = new SketchData();
-                sketchDataList.add(newSketchData);
-                mSketchView.updateSketchData(newSketchData);
-                mSketchView.setEditMode(SketchView.EDIT_STROKE);//切换笔画编辑模式
-                showSketchView(true);
-            }
-
-            @Override
-            public void onSelectCallback(SketchData sketchData) {
-                mSketchView.updateSketchData(sketchData);
-                showSketchView(true);
-            }
-        });
-        sketchGV.setAdapter(sketchGVAdapter);
-    }
-
-    private void showSketchView(boolean b) {
-        mSketchView.setVisibility(b ? View.VISIBLE : View.GONE);
-        sketchGV.setVisibility(!b ? View.VISIBLE : View.GONE);
     }
 
     private void initDrawParams() {
@@ -453,14 +415,11 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     private void findView(View view) {
         FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.fl_sketch_container);
 
-        sketchGV = (GridView) view.findViewById(R.id.sketch_data_gv);
-
         //画板整体布局
         mSketchView = new ScaleSketchView(view.getContext(),null);
         frameLayout.addView(mSketchView);
         controlLayout = view.findViewById(R.id.controlLayout);
 
-        btn_add = (ImageView) view.findViewById(R.id.btn_add);
         btn_stroke = (ImageView) view.findViewById(R.id.btn_stroke);
         btn_eraser = (ImageView) view.findViewById(R.id.btn_eraser);
         btn_undo = (ImageView) view.findViewById(R.id.btn_undo);
@@ -479,7 +438,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
 
         //设置点击监听
         mSketchView.setOnDrawChangedListener(this);//设置撤销动作监听器
-        btn_add.setOnClickListener(this);
         btn_stroke.setOnClickListener(this);
         btn_eraser.setOnClickListener(this);
         btn_undo.setOnClickListener(this);
@@ -586,22 +544,10 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
             btn_redo.setAlpha(0.4f);
     }
 
-    private void updateGV() {
-        sketchGVAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.btn_add) {
-            if (mSketchView.getVisibility() == View.VISIBLE) {
-                mSketchView.createCurThumbnailBM();
-                showSketchView(false);
-            } else {
-                showSketchView(true);
-            }
-            updateGV();
-        } else if (id == R.id.btn_stroke) {
+        if (id == R.id.btn_stroke) {
             if (mSketchView.getEditMode() == SketchView.EDIT_STROKE && mSketchView.getStrokeType() != STROKE_TYPE_ERASER) {
                 showParamsPopupWindow(v, STROKE_TYPE_DRAW);
             } else {

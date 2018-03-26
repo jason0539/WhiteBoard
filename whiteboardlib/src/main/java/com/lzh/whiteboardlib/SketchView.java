@@ -92,7 +92,7 @@ public class SketchView extends View {
     public SketchView(Context context, AttributeSet attr) {
         super(context, attr);
         this.mContext = context;
-//        setSketchData(new SketchData());
+        setSketchData(new SketchData());
         initParams(context);
         invalidate();
     }
