@@ -1,1 +1,1 @@
-adb push app/src/main/assets/background/*.png /sdcard/
+adb push background/*.png /sdcard/
