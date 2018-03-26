@@ -26,20 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="连接"/>
-
-        <EditText
-            android:id="@+id/ed_dat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="data to send..."
-            android:text="test_data"/>
-
-        <Button
-            android:id="@+id/bn_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="发送"/>
     </LinearLayout>
 
     <FrameLayout

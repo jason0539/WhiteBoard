@@ -20,11 +20,11 @@ import com.lzh.whiteboardlib.SketchView;
  * Created by liuzhenhui on 2018/3/13.
  */
 
-public class SocketSketchActivity extends AppCompatActivity implements View.OnClickListener {
+public class SocketSketchActivity extends AppCompatActivity  {
     public static final int PORT = 1234;
 
     private Button bnConnect;
-    private EditText edIP, edData;
+    private EditText edIP;
 
     private WhiteBoardFragment whiteBoardFragment;
     private SketchView mSketchView;
@@ -68,12 +68,15 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socket);
 
-        this.findViewById(R.id.bn_send).setOnClickListener(this);
         bnConnect = (Button) this.findViewById(R.id.bn_connect);
-        bnConnect.setOnClickListener(this);
+        bnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connect();
+            }
+        });
 
         edIP = (EditText) this.findViewById(R.id.ed_ip);
-        edData = (EditText) this.findViewById(R.id.ed_dat);
 
         refreshUI(false);
         FragmentTransaction ts = getSupportFragmentManager().beginTransaction();
@@ -107,18 +110,6 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
         super.onStop();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bn_connect:
-                connect();
-                break;
-            case R.id.bn_send:
-                sendStr();
-                break;
-        }
-    }
-
     /**
      * 刷新界面显示
      *
@@ -146,26 +137,9 @@ public class SocketSketchActivity extends AppCompatActivity implements View.OnCl
                 String hostIP = edIP.getText().toString();
                 client.connect(hostIP, PORT);
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "端口错误", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
     }
 
-    /**
-     * 发送数据
-     */
-    private void sendStr() {
-        UtilThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String data = edData.getText().toString();
-                    client.getTransceiver().send(data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 }
