@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yinghe.testwb">
+    package="com.lzh.testwb">
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.yinghe.testwb.socket.SocketSketchActivity"
+            android:name="com.lzh.testwb.socket.SocketSketchActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -20,7 +20,7 @@
         <activity
             android:configChanges="orientation|screenSize"
             android:theme="@style/Base.Theme.AppCompat.Dialog"
-            android:name="com.yinghe.testwb.demo.MultiImageSelectorActivity" />
+            android:name="com.lzh.testwb.demo.MultiImageSelectorActivity" />
 
     </application>
 

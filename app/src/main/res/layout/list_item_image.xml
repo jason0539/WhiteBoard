@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yinghe.testwb.demo.ui.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lzh.testwb.demo.ui.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                              android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <com.yinghe.testwb.demo.ui.SquaredImageView
+    <com.lzh.testwb.demo.ui.SquaredImageView
         android:id="@+id/image"
         android:scaleType="centerInside"
         android:src="@drawable/default_error"
@@ -25,4 +25,4 @@
         android:layout_height="wrap_content"
         android:src="@drawable/btn_unselected"/>
 
-</com.yinghe.testwb.demo.ui.SquareFrameLayout>
+</com.lzh.testwb.demo.ui.SquareFrameLayout>
