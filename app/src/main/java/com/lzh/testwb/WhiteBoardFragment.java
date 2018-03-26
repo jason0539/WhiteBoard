@@ -33,7 +33,6 @@ import android.widget.Toast;
 import com.jph.takephoto.app.TakePhotoFragment;
 import com.jph.takephoto.model.TResult;
 import com.lzh.testwb.util.FileUtils;
-import com.lzh.testwb.util.ScreenUtils;
 import com.lzh.testwb.util.TimeUtils;
 import com.lzh.whiteboardlib.ScaleSketchView;
 import com.lzh.whiteboardlib.SketchView;
