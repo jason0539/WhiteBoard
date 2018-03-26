@@ -142,7 +142,7 @@ public class TransUtils {
      * 把一个坐标转换成string
      */
     public static final String transSketchPointToString(StrokePoint point) {
-        return String.valueOf(point.getX() / SketchViewStatusHolder.getSketchViewWidth() + "," + point.getY() / SketchViewStatusHolder.getSketchViewHeight());
+        return String.valueOf(point.getX() / SketchView.getSketchWidth() + "," + point.getY() / SketchView.getSketchHeight());
     }
 
     /**
@@ -150,8 +150,8 @@ public class TransUtils {
      */
     public static final StrokePoint transStringToSketchPoint(String pointString) {
         String[] pointsString = pointString.split(",");
-        float x = Float.valueOf(pointsString[0]) * SketchViewStatusHolder.getSketchViewWidth();
-        float y = Float.valueOf(pointsString[1]) * SketchViewStatusHolder.getSketchViewHeight();
+        float x = Float.valueOf(pointsString[0]) * SketchView.getSketchWidth();
+        float y = Float.valueOf(pointsString[1]) * SketchView.getSketchHeight();
         return new StrokePoint(x, y);
     }
 }

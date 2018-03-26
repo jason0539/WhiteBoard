@@ -83,7 +83,7 @@ public class SketchView extends View {
     public StrokePath strokePath;
     public Paint strokePaint;
     public float downX, downY, preX, preY, curX, curY;
-    public int mWidth, mHeight;
+    public static int mWidth, mHeight;
     public Context mContext;
     public boolean needCheckTolerance = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
     public OnDrawChangedListener onDrawChangedListener;
@@ -161,7 +161,6 @@ public class SketchView extends View {
         mWidth = MeasureSpec.getSize(widthMeasureSpec);
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(mWidth, mHeight);
-        SketchViewStatusHolder.setSize(mWidth, mHeight);
     }
 
     //缩放参数
@@ -524,6 +523,14 @@ public class SketchView extends View {
     public void setEditMode(int editMode) {
         this.curSketchData.editMode = editMode;
         invalidate();
+    }
+
+    public static final int getSketchWidth(){
+        return mWidth;
+    }
+
+    public static final int getSketchHeight() {
+        return mHeight;
     }
 
     public void setOnStrokeRecordFinishListener(OnStrokeRecordFinishListener listener){
