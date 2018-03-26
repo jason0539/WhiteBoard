@@ -68,8 +68,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     static final int COLOR_GREEN = Color.parseColor("#ff99cc00");
     static final int COLOR_ORANGE = Color.parseColor("#ffffbb33");
     static final int COLOR_BLUE = Color.parseColor("#ff33b5e5");
-    public static final int REQUEST_IMAGE = 2;
-    public static final int REQUEST_BACKGROUND = 3;
 
     private static final float BTN_ALPHA = 0.4f;
 
@@ -121,14 +119,9 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     private EditText strokeET;//绘制文字的内容
     private int size;
     private AlertDialog dialog;
-    private ArrayList<String> mSelectPath;
 
     private List<SketchData> sketchDataList = new ArrayList<>();
-//    //    private SketchData curSketchData;
-//    private List<String> sketchPathList = new ArrayList<>();
-//    private int dataPosition;
 
-    //
     public static int sketchViewHeight;
     public static int sketchViewWidth;
     public static int sketchViewRight;
@@ -138,8 +131,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
 
     /**
      * show 默认新建一个学生端功能
-     * @author TangentLu
-     * create at 16/6/17 上午9:59
      */
     public static WhiteBoardFragment newInstance() {
         return new WhiteBoardFragment();
@@ -148,8 +139,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     /**
      * show 新建一个教师端的画板碎片，有推送按钮
      * @param callback 推送按钮监听器，接受返回的图片文件路径可用于显示文件
-     * @author TangentLu
-     * create at 16/6/17 上午9:57
      */
     public static WhiteBoardFragment newInstance(SendBtnCallback callback) {
         WhiteBoardFragment fragment = new WhiteBoardFragment();
@@ -160,8 +149,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
 
     /**
      * @param imgPath 添加的背景图片文件路径
-     * @author TangentLu
-     * create at 16/6/21 下午3:39
      * show 设置当前白板的背景图片
      */
     public void setCurBackgroundByPath(String imgPath) {
