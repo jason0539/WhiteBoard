@@ -59,10 +59,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
 
     final String TAG = getClass().getSimpleName();
 
-    public interface SendBtnCallback {
-        void onSendBtnClick(File filePath);
-    }
-
     static final int COLOR_BLACK = Color.parseColor("#ff000000");
     static final int COLOR_RED = Color.parseColor("#ffff4444");
     static final int COLOR_GREEN = Color.parseColor("#ff99cc00");
@@ -92,8 +88,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     ImageView btn_background;//背景图片
     ImageView btn_save;//保存
     ImageView btn_empty;//清空
-    ImageView btn_send;//推送
-    ImageView btn_send_space;//推送按钮间隔
     Button btn_persistence;//持久化到文件
     Button btn_recover;//从文件恢复
 
@@ -109,9 +103,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     int strokePupWindowsDPHeight = 275;//画笔弹窗高度，单位DP
     int eraserPupWindowsDPHeight = 90;//橡皮擦弹窗高度，单位DP
 
-
-    SendBtnCallback sendBtnCallback;
-    boolean isTeacher;
     PopupWindow strokePopupWindow, eraserPopupWindow, textPopupWindow;//画笔、橡皮擦参数设置弹窗实例
     private View popupStrokeLayout, popupEraserLayout, popupTextLayout;//画笔、橡皮擦弹窗布局
     private SeekBar strokeSeekBar, strokeAlphaSeekBar, eraserSeekBar;
@@ -134,17 +125,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
      */
     public static WhiteBoardFragment newInstance() {
         return new WhiteBoardFragment();
-    }
-
-    /**
-     * show 新建一个教师端的画板碎片，有推送按钮
-     * @param callback 推送按钮监听器，接受返回的图片文件路径可用于显示文件
-     */
-    public static WhiteBoardFragment newInstance(SendBtnCallback callback) {
-        WhiteBoardFragment fragment = new WhiteBoardFragment();
-        fragment.sendBtnCallback = callback;
-        fragment.isTeacher = true;
-        return fragment;
     }
 
     /**
@@ -411,14 +391,8 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         btn_background = (ImageView) view.findViewById(R.id.btn_background);
         btn_save = (ImageView) view.findViewById(R.id.btn_save);
         btn_empty = (ImageView) view.findViewById(R.id.btn_empty);
-        btn_send = (ImageView) view.findViewById(R.id.btn_send);
         btn_persistence = (Button) view.findViewById(R.id.btn_persistance);
         btn_recover = (Button) view.findViewById(R.id.btn_recover);
-        btn_send_space = (ImageView) view.findViewById(R.id.btn_send_space);
-        if (isTeacher) {
-            btn_send.setVisibility(View.VISIBLE);
-            btn_send_space.setVisibility(View.VISIBLE);
-        }
 
         //设置点击监听
         mSketchView.setOnDrawChangedListener(this);//设置撤销动作监听器
@@ -429,7 +403,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         btn_empty.setOnClickListener(this);
         btn_save.setOnClickListener(this);
         btn_background.setOnClickListener(this);
-        btn_send.setOnClickListener(this);
         btn_persistence.setOnClickListener(this);
         btn_recover.setOnClickListener(this);
         mSketchView.setTextWindowCallback(new SketchView.TextWindowCallback() {
@@ -467,11 +440,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        getSketchSize();
     }
 
     private void getSketchSize() {
@@ -573,16 +541,6 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
             }
         }else if (id == R.id.btn_background) {
             getTakePhoto().onPickFromDocuments();
-        } else if (id == R.id.btn_send) {
-            if (sendBtnCallback != null) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String photoName = TEMP_FILE_NAME + TimeUtils.getNowTimeString();
-                        sendBtnCallback.onSendBtnClick(saveInOI(TEMP_FILE_PATH, photoName, 50));
-                    }
-                }).start();
-            }
         }else if (id == R.id.btn_persistance) {
             SketchData sketchData = mSketchView.getSketchData();
             String sketchDataString = TransUtils.transSketchDataToString(sketchData);
