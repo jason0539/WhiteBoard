@@ -1,4 +1,4 @@
-package com.yinghe.whiteboardlib.utils;
+package com.yinghe.testwb.demo.util;
 
 import android.content.Context;
 import android.graphics.Point;
