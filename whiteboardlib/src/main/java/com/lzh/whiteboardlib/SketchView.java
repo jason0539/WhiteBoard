@@ -56,7 +56,9 @@ import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
 
 public class SketchView extends View {
 
-    public static final int EDIT_STROKE = 1;
+    public static final int MODE_VIEW = 0;//浏览模式
+    public static final int MODE_STROKE = 1;//绘制模式
+
     public static final int DEFAULT_STROKE_SIZE = 3;
     public static final int DEFAULT_STROKE_ALPHA = 100;
     public static final int DEFAULT_ERASER_SIZE = 50;
@@ -298,7 +300,7 @@ public class SketchView extends View {
         downX = curX;
         downY = curY;
         needCheckTolerance = true;
-        if (curSketchData.editMode == EDIT_STROKE) {
+        if (curSketchData.editMode == MODE_STROKE) {
             //进行新的绘制时，清空redo栈（如果要保留，注释这行即可）
             curSketchData.strokeRedoList.clear();
             curStrokeRecord = new StrokeRecord(curSketchData.strokeType);
@@ -345,7 +347,7 @@ public class SketchView extends View {
         if (!needCheckTolerance ||
                 (needCheckTolerance && MathUtil.rectDiagonal(curX-downX, curY- downY) > TOUCH_TOLERANCE)) {
             needCheckTolerance = false;
-            if (curSketchData.editMode == EDIT_STROKE) {
+            if (curSketchData.editMode == MODE_STROKE) {
                 if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
                     strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
                 } else if (curSketchData.strokeType == STROKE_TYPE_DRAW) {

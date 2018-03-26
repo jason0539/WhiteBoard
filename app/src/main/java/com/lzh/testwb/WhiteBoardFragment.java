@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -146,7 +145,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         sketchDataList.add(newSketchData);
         mSketchView.setSketchData(newSketchData);
         setCurBackgroundByPath(imgPath);
-        mSketchView.setEditMode(SketchView.EDIT_STROKE);
+        mSketchView.setEditMode(SketchView.MODE_STROKE);
     }
 
 
@@ -500,7 +499,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btn_stroke) {
-            if (mSketchView.getEditMode() == SketchView.EDIT_STROKE && mSketchView.getStrokeType() != STROKE_TYPE_ERASER) {
+            if (mSketchView.getEditMode() == SketchView.MODE_STROKE && mSketchView.getStrokeType() != STROKE_TYPE_ERASER) {
                 showParamsPopupWindow(v, STROKE_TYPE_DRAW);
             } else {
                 int checkedId = strokeTypeRG.getCheckedRadioButtonId();
@@ -517,15 +516,15 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
                 }
                 mSketchView.setStrokeType(strokeType);
             }
-            mSketchView.setEditMode(SketchView.EDIT_STROKE);
+            mSketchView.setEditMode(SketchView.MODE_STROKE);
             showBtn(btn_stroke);
         } else if (id == R.id.btn_eraser) {
-            if (mSketchView.getEditMode() == SketchView.EDIT_STROKE && mSketchView.getStrokeType() == STROKE_TYPE_ERASER) {
+            if (mSketchView.getEditMode() == SketchView.MODE_STROKE && mSketchView.getStrokeType() == STROKE_TYPE_ERASER) {
                 showParamsPopupWindow(v, STROKE_TYPE_ERASER);
             } else {
                 mSketchView.setStrokeType(STROKE_TYPE_ERASER);
             }
-            mSketchView.setEditMode(SketchView.EDIT_STROKE);
+            mSketchView.setEditMode(SketchView.MODE_STROKE);
             showBtn(btn_eraser);
         } else if (id == R.id.btn_undo) {
             mSketchView.undo();

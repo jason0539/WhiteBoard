@@ -22,7 +22,7 @@ public class SketchData {
         strokeRedoList = new ArrayList<>();
         backgroundBitmap = null;
         strokeType = StrokeRecord.STROKE_TYPE_DRAW;
-        editMode = SketchView.EDIT_STROKE;
+        editMode = SketchView.MODE_STROKE;
     }
 
 }
