@@ -1,0 +1,1 @@
+adb push app/src/main/assets/background/*.png /sdcard/
