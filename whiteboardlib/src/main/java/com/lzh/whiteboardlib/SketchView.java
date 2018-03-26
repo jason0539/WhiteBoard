@@ -52,7 +52,6 @@ import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_ERASER;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_LINE;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_RECTANGLE;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
-import static com.lzh.whiteboardlib.utils.BitmapUtils.createBitmapThumbnail;
 
 
 public class SketchView extends View {
@@ -111,13 +110,6 @@ public class SketchView extends View {
 
     public void setSketchData(SketchData sketchData) {
         this.curSketchData = sketchData;
-    }
-
-    public void updateSketchData(SketchData sketchData) {
-        if (curSketchData != null){
-            curSketchData.thumbnailBM = getThumbnailResultBitmap();//更新数据前先保存上一份数据的缩略图
-        }
-        setSketchData(sketchData);
     }
 
     public void addStrokePath(StrokeRecord strokeRecord) {
@@ -413,15 +405,6 @@ public class SketchView extends View {
         return bitmap;
     }
 
-    @NonNull
-    public void createCurThumbnailBM() {
-        curSketchData.thumbnailBM = getThumbnailResultBitmap();
-    }
-
-    @NonNull
-    public Bitmap getThumbnailResultBitmap() {
-        return createBitmapThumbnail(getResultBitmap(), true, DensityUtil.dip2px(mContext, 200), DensityUtil.dip2px(mContext, 200));
-    }
 
     /*
      * 删除一笔

@@ -144,7 +144,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
     public void setNewBackgroundByPath(String imgPath) {
         SketchData newSketchData = new SketchData();
         sketchDataList.add(newSketchData);
-        mSketchView.updateSketchData(newSketchData);
+        mSketchView.setSketchData(newSketchData);
         setCurBackgroundByPath(imgPath);
         mSketchView.setEditMode(SketchView.EDIT_STROKE);
     }

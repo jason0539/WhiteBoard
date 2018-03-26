@@ -150,10 +150,6 @@ public class ScaleSketchView extends RelativeLayout {
         pathView.setSketchData(newSketchData);
     }
 
-    public void updateSketchData(SketchData newSketchData) {
-        pathView.updateSketchData(newSketchData);
-    }
-
     public void setEditMode(int editMode) {
         pathView.setEditMode(editMode);
     }
@@ -228,10 +224,6 @@ public class ScaleSketchView extends RelativeLayout {
 
     public void setStrokeColor(int color) {
         pathView.setStrokeColor(color);
-    }
-
-    public void createCurThumbnailBM() {
-        pathView.createCurThumbnailBM();
     }
 
     public SketchView getSketchView() {
