@@ -3,7 +3,6 @@ package com.yinghe.whiteboardlib.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -16,14 +15,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yinghe.whiteboardlib.MultiImageSelector;
@@ -116,8 +111,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
     int strokeMode;//模式
     int strokeType;//模式
 
-    EditText saveET;
-    AlertDialog saveDialog;
     GridView sketchGV;
     SketchDataGridAdapter sketchGVAdapter;
 
@@ -252,7 +245,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         findView(rootView);//载入所有的按钮实例
         initDrawParams();//初始化绘画参数
         initPopupWindows();//初始化弹框
-        initSaveDialog();
         initData();
         initSketchGV();
         return rootView;
@@ -294,48 +286,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         mSketchView.setVisibility(b ? View.VISIBLE : View.GONE);
         sketchGV.setVisibility(!b ? View.VISIBLE : View.GONE);
     }
-
-    private void initSaveDialog() {
-        saveET = new EditText(activity);
-        saveET.setHint("新文件名");
-        saveET.setGravity(Gravity.CENTER);
-        saveET.setSingleLine();
-        saveET.setInputType(EditorInfo.TYPE_CLASS_TEXT);
-        saveET.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        saveET.setSelectAllOnFocus(true);
-        saveET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    ScreenUtils.hideInput(saveDialog.getCurrentFocus());
-                    saveDialog.dismiss();
-                    String input = saveET.getText().toString();
-                    saveInUI(input + ".png");
-                }
-                return true;
-            }
-        });
-        saveDialog = new AlertDialog.Builder(getActivity())
-                .setTitle("请输入保存文件名")
-                .setMessage("")
-                .setView(saveET)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ScreenUtils.hideInput(saveDialog.getCurrentFocus());
-                        String input = saveET.getText().toString();
-                        saveInUI(input + ".png");
-                    }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ScreenUtils.hideInput(saveDialog.getCurrentFocus());
-                    }
-                })
-                .setCancelable(false)
-                .create();
-    }
-
 
     private void initDrawParams() {
         //默认为画笔模式
@@ -689,7 +639,7 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
             if (mSketchView.getRecordCount() == 0) {
                 Toast.makeText(getActivity(), "您还没有绘图", Toast.LENGTH_SHORT).show();
             } else {
-                showSaveDialog();
+                saveInUI(TimeUtils.getNowTimeString() + ".png");
             }
         }else if (id == R.id.btn_background) {
             startMultiImageSelector(REQUEST_BACKGROUND);
@@ -733,13 +683,6 @@ public class WhiteBoardFragment extends Fragment implements SketchView.OnDrawCha
         boundsInts[2] = mSketchView.getWidth();
         boundsInts[3] = mSketchView.getHeight();
         selector.start(this, boundsInts, request);
-    }
-
-    private void showSaveDialog() {
-        saveDialog.show();
-        saveET.setText(TimeUtils.getNowTimeString());
-        saveET.selectAll();
-        ScreenUtils.showInput(mSketchView);
     }
 
     public SketchView getSketchView() {
