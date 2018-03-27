@@ -40,6 +40,11 @@
                 style="@style/control_btn"
                 android:text="取" />
 
+            <Button
+                android:id="@+id/btn_view"
+                style="@style/control_btn"
+                android:alpha="0.4"
+                android:text="view" />
             <!--<ImageView style="@style/control_btn.space" />-->
 
             <ImageView

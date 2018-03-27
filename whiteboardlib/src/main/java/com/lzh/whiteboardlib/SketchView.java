@@ -165,38 +165,40 @@ public class SketchView extends View {
         mOffset.x = mMatrixValus;
         mOffset.y = mMatrixValus1;
         //绘制形状时path为空
-        if (curStrokeRecord.path != null) {
+        if (curStrokeRecord != null && curStrokeRecord.path != null) {
             curStrokeRecord.path.setScaleAndOffset(mScale,mOffset.x,mOffset.y);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
-        curX = (event.getX() - mOffset.x)/mScale;
-        curY = (event.getY() - mOffset.y)/mScale;
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_POINTER_DOWN:
-                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
-                break;
-            case MotionEvent.ACTION_DOWN:
-                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_DOWN");
-                touch_down();
-                invalidate();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_MOVE");
-                touch_move(event);
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_UP");
-                touch_up();
-                invalidate();
-                break;
+        if (curSketchData.editMode == MODE_STROKE) {
+            //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
+            curX = (event.getX() - mOffset.x)/mScale;
+            curY = (event.getY() - mOffset.y)/mScale;
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_DOWN");
+                    touch_down();
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_MOVE");
+                    touch_move(event);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_UP");
+                    touch_up();
+                    invalidate();
+                    break;
+            }
+            preX = curX;
+            preY = curY;
         }
-        preX = curX;
-        preY = curY;
         return true;
     }
 

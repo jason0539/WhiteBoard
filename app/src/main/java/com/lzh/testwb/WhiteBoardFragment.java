@@ -80,6 +80,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
 
     View controlLayout;//控制布局
 
+    Button btn_view;//浏览模式
     ImageView btn_stroke;//画笔
     ImageView btn_eraser;//橡皮擦
     ImageView btn_undo;//撤销
@@ -383,6 +384,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         frameLayout.addView(mSketchView);
         controlLayout = view.findViewById(R.id.controlLayout);
 
+        btn_view = (Button) view.findViewById(R.id.btn_view);
         btn_stroke = (ImageView) view.findViewById(R.id.btn_stroke);
         btn_eraser = (ImageView) view.findViewById(R.id.btn_eraser);
         btn_undo = (ImageView) view.findViewById(R.id.btn_undo);
@@ -396,6 +398,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         //设置点击监听
         mSketchView.setOnDrawChangedListener(this);//设置撤销动作监听器
         btn_stroke.setOnClickListener(this);
+        btn_view.setOnClickListener(this);
         btn_eraser.setOnClickListener(this);
         btn_undo.setOnClickListener(this);
         btn_redo.setOnClickListener(this);
@@ -518,6 +521,9 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
             }
             mSketchView.setEditMode(SketchView.MODE_STROKE);
             showBtn(btn_stroke);
+        }else if (id == R.id.btn_view) {
+            mSketchView.setEditMode(SketchView.MODE_VIEW);
+            showBtn(btn_view);
         } else if (id == R.id.btn_eraser) {
             if (mSketchView.getEditMode() == SketchView.MODE_STROKE && mSketchView.getStrokeType() == STROKE_TYPE_ERASER) {
                 showParamsPopupWindow(v, STROKE_TYPE_ERASER);
@@ -676,9 +682,10 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         }
     }
 
-    private void showBtn(ImageView iv) {
+    private void showBtn(View iv) {
         btn_eraser.setAlpha(BTN_ALPHA);
         btn_stroke.setAlpha(BTN_ALPHA);
+        btn_view.setAlpha(BTN_ALPHA);
         iv.setAlpha(1f);
     }
 
