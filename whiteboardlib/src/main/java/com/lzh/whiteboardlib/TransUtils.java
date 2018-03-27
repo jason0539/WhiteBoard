@@ -9,7 +9,6 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokePath;
 import com.lzh.whiteboardlib.bean.StrokePoint;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
@@ -29,10 +28,10 @@ public class TransUtils {
     /**
      * 把一张白板所有轨迹数据转成string
      */
-    public static final String transSketchDataToString(SketchData sketchData) {
+    public static final String transStrokeListToString(List<StrokeRecord> strokeRecordList) {
         List<String> strokeRecordStringList = new ArrayList<>();
         String tempStrokeRecordString = null;
-        for (StrokeRecord strokeRecord : sketchData.strokeRecordList) {
+        for (StrokeRecord strokeRecord : strokeRecordList) {
             tempStrokeRecordString = transStrokeRecordToString(strokeRecord);
             strokeRecordStringList.add(tempStrokeRecordString);
         }
@@ -43,7 +42,7 @@ public class TransUtils {
     /**
      * 从string恢复一张白板的所有轨迹数据
      */
-    public static final SketchData transStringToSketchData(String stringSketchData) {
+    public static final List<StrokeRecord> transStringToStrokeList(String stringSketchData) {
         List<String> strokeRecordStringList = JSON.parseArray(stringSketchData, String.class);
         List<StrokeRecord> strokeRecordList = new ArrayList<>();
         StrokeRecord tempStrokeRecord = null;
@@ -51,9 +50,7 @@ public class TransUtils {
             tempStrokeRecord = TransUtils.transStringToStrokeRecord(strokeRecordString);
             strokeRecordList.add(tempStrokeRecord);
         }
-        SketchData sketchData = new SketchData();
-        sketchData.strokeRecordList = strokeRecordList;
-        return sketchData;
+        return strokeRecordList;
     }
 
     //===========================   String <-> StrokeRecord   =================================
@@ -62,14 +59,16 @@ public class TransUtils {
      * 把一笔轨迹转成string
      */
     public static final String transStrokeRecordToString(StrokeRecord strokeRecord) {
-        WhiteBoardData whiteBoardData = new WhiteBoardData();
+        WhiteBoardStroke whiteBoardStroke = new WhiteBoardStroke();
+        whiteBoardStroke.setUserid(strokeRecord.userid);
+        whiteBoardStroke.setId(strokeRecord.id);
         //笔迹类型
         int type = strokeRecord.type;
-        whiteBoardData.setType(type);
+        whiteBoardStroke.setType(type);
         //画笔
         Paint paint = strokeRecord.paint;
-        whiteBoardData.setColor("#"+Integer.toHexString(paint.getColor()));
-        whiteBoardData.setWidth(paint.getStrokeWidth());
+        whiteBoardStroke.setColor("#"+Integer.toHexString(paint.getColor()));
+        whiteBoardStroke.setWidth(paint.getStrokeWidth());
         //路线
         String strokePathString = new String();
         if (type == StrokeRecord.STROKE_TYPE_DRAW
@@ -84,18 +83,18 @@ public class TransUtils {
         }else if (type == StrokeRecord.STROKE_TYPE_TEXT) {
 
         }
-        whiteBoardData.setPath(strokePathString);
+        whiteBoardStroke.setPath(strokePathString);
 
-        return JSONObject.toJSONString(whiteBoardData);
+        return JSONObject.toJSONString(whiteBoardStroke);
     }
 
     /**
      * 从string恢复一笔轨迹
      */
     public static StrokeRecord transStringToStrokeRecord(String recordString) {
-        WhiteBoardData recordPersistenceBean = JSON.parseObject(recordString, WhiteBoardData.class);
+        WhiteBoardStroke recordPersistenceBean = JSON.parseObject(recordString, WhiteBoardStroke.class);
         //笔迹类型
-        StrokeRecord strokeRecord = new StrokeRecord(recordPersistenceBean.getType());
+        StrokeRecord strokeRecord = new StrokeRecord(recordPersistenceBean.getUserid(),recordPersistenceBean.getType(),recordPersistenceBean.id);
         int type = strokeRecord.type;
         //画笔
         Paint paint = PaintUtils.createDefaultStrokePaint();

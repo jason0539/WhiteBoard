@@ -5,8 +5,14 @@ package com.lzh.whiteboardlib;
  * 持久化保存的白板数据结构
  */
 
-public class WhiteBoardData {
+public class WhiteBoardStroke {
 
+    //用户id
+    long userid;
+    //笔画id
+    int id;
+    //笔画子id：一笔的坐标数据过长则需要切分为多段发送
+    int sid;
     //坐标数组：用坐标内用逗号隔开,坐标间用分号隔开,例如:1,2;2,3
     String path;
     //线条宽度：px
@@ -48,4 +54,27 @@ public class WhiteBoardData {
         this.type = type;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getSid() {
+        return sid;
+    }
+
+    public void setSid(int sid) {
+        this.sid = sid;
+    }
+
+    public long getUserid() {
+        return userid;
+    }
+
+    public void setUserid(long userid) {
+        this.userid = userid;
+    }
 }
