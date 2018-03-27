@@ -56,7 +56,7 @@ public class SocketSketchActivity extends AppCompatActivity  {
                 @Override
                 public void run() {
                     MLog.d(MLog.TAG_SOCKET,"SocketSketchActivity->run " + s);
-                    StrokeRecord strokeRecord = TransUtils.transStringToStrokeRecord(s);
+                    StrokeRecord strokeRecord = TransUtils.resumeStrokeRecord(s);
                     mSketchView.addStrokePath(strokeRecord);
                 }
             });
@@ -95,7 +95,7 @@ public class SocketSketchActivity extends AppCompatActivity  {
                     @Override
                     public void run() {
                         if (client.isConnected()) {
-                            String stroRecordString = TransUtils.transStrokeRecordToString(strokeRecord);
+                            String stroRecordString = TransUtils.transStrokeRecord(strokeRecord);
                             client.getTransceiver().send(stroRecordString);
                         }
                     }

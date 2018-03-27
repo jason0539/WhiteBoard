@@ -548,13 +548,13 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
             getTakePhoto().onPickFromDocuments();
         }else if (id == R.id.btn_persistance) {
             SketchData sketchData = mSketchView.getSketchData();
-            String sketchDataString = TransUtils.transStrokeListToString(sketchData.strokeRecordList);
+            String sketchDataString = TransUtils.transStrokeRecordList(sketchData.strokeRecordList);
             MLog.d(MLog.TAG_SOCKET, "WhiteBoardFragment->onClick " + sketchDataString);
             FileUtils.saveStringToFile(sketchDataString, SKETCH_DATA_PATH);
         }else if (id == R.id.btn_recover) {
             String sketchDataString = FileUtils.readStringFromFile(SKETCH_DATA_PATH);
             SketchData sketchData = new SketchData();
-            sketchData.strokeRecordList = TransUtils.transStringToStrokeList(sketchDataString);
+            sketchData.strokeRecordList = TransUtils.resumeStrokeRecordList(sketchDataString);
             mSketchView.setSketchData(sketchData);
             mSketchView.getSketchView().invalidate();
             MLog.d(MLog.TAG_SOCKET,"WhiteBoardFragment->onClick " + sketchDataString);
