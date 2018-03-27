@@ -368,12 +368,14 @@ public class SketchView extends View {
     }
 
     public void touch_up() {
-        strokePath.end(curX, curY);
-        //先只同步DRAW类型
-        if (strokePath.getPathType() == StrokePath.PathType.QUAD_TO) {
-            if (onStrokeRecordFinishListener != null) {
-                onStrokeRecordFinishListener.onPathDrawFinish(curStrokeRecord);
+        if (strokePath != null) {
+            //先只同步DRAW类型
+            if (strokePath.getPathType() == StrokePath.PathType.QUAD_TO) {
+                strokePath.end(curX, curY);
             }
+        }
+        if (onStrokeRecordFinishListener != null) {
+            onStrokeRecordFinishListener.onPathDrawFinish(curStrokeRecord);
         }
     }
 

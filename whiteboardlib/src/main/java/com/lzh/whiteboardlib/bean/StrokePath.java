@@ -28,6 +28,9 @@ public class StrokePath extends Path {
 
     @Override
     public void moveTo(float x, float y) {
+        if (pathType == PathType.LINE_TO) {
+            pathPoints.clear();
+        }
         pathType = PathType.MOVE_TO;
         StrokePoint point = new StrokePoint(recoverXPosition(x), recoverYPosition(y));
         pathPoints.add(point);
@@ -43,6 +46,15 @@ public class StrokePath extends Path {
         pathPoints.add(point1);
         MLog.d(MLog.TAG_DRAW, "StrokePath->quadTo " + point1 + ";" + point2);
         super.quadTo(x1, y1, x2, y2);
+    }
+
+    @Override
+    public void lineTo(float x, float y) {
+        pathType = PathType.LINE_TO;
+        StrokePoint point = new StrokePoint(recoverXPosition(x), recoverYPosition(y));
+        pathPoints.add(point);
+        MLog.d(MLog.TAG_DRAW,"StrokePath->lineTo ");
+        super.lineTo(x, y);
     }
 
     public void end(float x, float y) {
