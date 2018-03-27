@@ -241,7 +241,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
             @Override
             public void onDismiss() {
                 if (!strokeET.getText().toString().equals("")) {
-                    StrokeRecord record = new StrokeRecord(strokeType);
+                    StrokeRecord record = new StrokeRecord(SketchView.USER_ID,strokeType);
                     record.text = strokeET.getText().toString();
                 }
             }

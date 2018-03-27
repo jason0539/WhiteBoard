@@ -46,6 +46,8 @@ import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.utils.MathUtil;
 import com.lzh.whiteboardlib.utils.PaintUtils;
 
+import java.util.UUID;
+
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_CIRCLE;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_DRAW;
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_ERASER;
@@ -55,6 +57,8 @@ import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
 
 
 public class SketchView extends View {
+
+    public static final long USER_ID = UUID.randomUUID().hashCode();
 
     public static final int MODE_VIEW = 0;//浏览模式
     public static final int MODE_STROKE = 1;//绘制模式
@@ -305,7 +309,7 @@ public class SketchView extends View {
         if (curSketchData.editMode == MODE_STROKE) {
             //进行新的绘制时，清空redo栈（如果要保留，注释这行即可）
             curSketchData.strokeRedoList.clear();
-            curStrokeRecord = new StrokeRecord(curSketchData.strokeType);
+            curStrokeRecord = new StrokeRecord(USER_ID,curSketchData.strokeType);
             strokePaint.setAntiAlias(true);//由于降低密度绘制，所以需要抗锯齿
             if (curSketchData.strokeType == StrokeRecord.STROKE_TYPE_ERASER) {
                 strokePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));//关键代码
@@ -376,8 +380,12 @@ public class SketchView extends View {
                 strokePath.end(curX, curY);
             }
         }
+        notifyDrawListener(curStrokeRecord);
+    }
+
+    private void notifyDrawListener(StrokeRecord strokeRecord) {
         if (onStrokeRecordFinishListener != null) {
-            onStrokeRecordFinishListener.onPathDrawFinish(curStrokeRecord);
+            onStrokeRecordFinishListener.onPathDrawFinish(strokeRecord);
         }
     }
 
@@ -416,9 +424,10 @@ public class SketchView extends View {
      * 删除一笔
      */
     public void undo() {
-        if (curSketchData.strokeRecordList.size() > 0) {
-            curSketchData.strokeRedoList.add(curSketchData.strokeRecordList.get(curSketchData.strokeRecordList.size() - 1));
-            curSketchData.strokeRecordList.remove(curSketchData.strokeRecordList.size() - 1);
+        int recordSize = curSketchData.strokeRecordList.size();
+        if (recordSize > 0) {
+            StrokeRecord lastRecord = curSketchData.strokeRecordList.remove(recordSize - 1);
+            curSketchData.strokeRedoList.add(lastRecord);
             invalidate();
         }
     }
@@ -427,11 +436,13 @@ public class SketchView extends View {
      * 撤销
      */
     public void redo() {
-        if (curSketchData.strokeRedoList.size() > 0) {
-            curSketchData.strokeRecordList.add(curSketchData.strokeRedoList.get(curSketchData.strokeRedoList.size() - 1));
-            curSketchData.strokeRedoList.remove(curSketchData.strokeRedoList.size() - 1);
+        int redoSize = curSketchData.strokeRedoList.size();
+        if (redoSize > 0) {
+            StrokeRecord redoRecord = curSketchData.strokeRedoList.remove(redoSize - 1);
+            curSketchData.strokeRecordList.add(redoRecord);
+            notifyDrawListener(redoRecord);
+            invalidate();
         }
-        invalidate();
     }
 
     public int getRedoCount() {
