@@ -89,7 +89,16 @@ public class StrokePath extends Path {
         return pathPoints;
     }
 
+    public void setPathPoints(ArrayList points){
+        this.pathPoints = points;
+    }
+
     public PathType getPathType() {
         return pathType;
     }
+
+    public void setPathType(PathType pathType) {
+        this.pathType = pathType;
+    }
+
 }
