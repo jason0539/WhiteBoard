@@ -537,7 +537,7 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
         } else if (id == R.id.btn_redo) {
             mSketchView.redo();
         } else if (id == R.id.btn_empty) {
-            mSketchView.erase();
+            mSketchView.erase(true);
         } else if (id == R.id.btn_save) {
             if (mSketchView.getRecordCount() == 0) {
                 Toast.makeText(getActivity(), "您还没有绘图", Toast.LENGTH_SHORT).show();

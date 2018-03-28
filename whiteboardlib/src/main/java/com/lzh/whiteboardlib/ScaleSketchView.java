@@ -166,8 +166,8 @@ public class ScaleSketchView extends RelativeLayout {
         pathView.setTextWindowCallback(textWindowCallback);
     }
 
-    public void erase() {
-        pathView.erase();
+    public void erase(boolean manual) {
+        pathView.erase(manual);
     }
 
     public void redo() {

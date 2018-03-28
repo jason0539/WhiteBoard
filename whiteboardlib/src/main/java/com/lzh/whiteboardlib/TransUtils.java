@@ -47,8 +47,10 @@ public class TransUtils {
     public static final List<StrokeRecord> resumeStrokeRecordList(String stringSketchData) {
         List<String> strokeRecordListString = JSON.parseArray(stringSketchData, String.class);
         List<StrokeRecord> strokeRecordList = new ArrayList<>();
+        WhiteBoardCmd whiteBoardCmd = null;
         for (String strokeRecordString : strokeRecordListString) {
-            strokeRecordList.add(resumeStrokeRecord(strokeRecordString));
+            whiteBoardCmd = JSON.parseObject(strokeRecordString,WhiteBoardCmd.class);
+            strokeRecordList.add(resumeStrokeRecord(whiteBoardCmd));
         }
         return strokeRecordList;
     }
@@ -92,7 +94,7 @@ public class TransUtils {
         }else if (type == StrokeRecord.STROKE_TYPE_TEXT) {
 
         }
-        WhiteBoardCmd whiteBoardCmd = new WhiteBoardCmd(uid,sq,p,w,c,type);
+        WhiteBoardCmd whiteBoardCmd = new WhiteBoardCmd(WhiteBoardCmd.CMD_DRAW,uid,sq,p,w,c,type);
         ArrayList arrayList = new ArrayList<>();
         arrayList.add(JSONObject.toJSONString(whiteBoardCmd));
         return arrayList;
@@ -101,8 +103,7 @@ public class TransUtils {
     /**
      * 从string恢复一笔轨迹
      */
-    public static StrokeRecord resumeStrokeRecord(String recordString) {
-        WhiteBoardCmd wbStroke = JSON.parseObject(recordString, WhiteBoardCmd.class);
+    public static StrokeRecord resumeStrokeRecord(WhiteBoardCmd wbStroke) {
         StrokeRecord strokeRecord = new StrokeRecord(wbStroke.uid,wbStroke.type,wbStroke.sq);
         int type = strokeRecord.type;
         Paint paint = PaintUtils.createDefaultStrokePaint();

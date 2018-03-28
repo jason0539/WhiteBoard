@@ -17,6 +17,12 @@ public class WhiteBoardCmd {
     //除以每个坐标长度（4字节）得出每个WhiteBoardStroke能够容纳的最多StrokePoint数量
     public static final int MAX_LENGTH = (500 - 8 - 4 - 8 - 4 - 8) / 4;
 
+    public static final int CMD_CLEAR = 0;
+    public static final int CMD_DRAW = 1;
+    public static final int CMD_DELETE = 2;
+
+    //指令类型
+    int cmd;
     //用户id
     long uid;
     //笔画id
@@ -34,7 +40,8 @@ public class WhiteBoardCmd {
 
     }
 
-    public WhiteBoardCmd(long uid, int sq, String p, float w, String c, int type) {
+    public WhiteBoardCmd(int cmd, long uid, int sq, String p, float w, String c, int type) {
+        this.cmd = cmd;
         this.uid = uid;
         this.sq = sq;
         this.p = p;
@@ -89,6 +96,14 @@ public class WhiteBoardCmd {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(int cmd) {
+        this.cmd = cmd;
     }
 
     public static boolean isStrokeRecordNeedSplit(StrokeRecord strokeRecord) {

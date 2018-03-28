@@ -46,6 +46,8 @@ import com.lzh.whiteboardlib.utils.MathUtil;
 import com.lzh.whiteboardlib.utils.PaintUtils;
 import com.lzh.whiteboardlib.utils.UtilBessel;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_CIRCLE;
@@ -92,7 +94,7 @@ public class SketchView extends View {
     public Context mContext;
     public boolean needCheckTolerance = true;//每次down事件都要检查是否滑动距离超过阈值，超过才绘制
     public OnDrawChangedListener onDrawChangedListener;
-    public OnStrokeRecordFinishListener onStrokeRecordFinishListener;
+    public OnStrokeRecordChangeListener onStrokeRecordChangeListener;
 
     public SketchView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -384,8 +386,20 @@ public class SketchView extends View {
     }
 
     private void notifyDrawListener(StrokeRecord strokeRecord) {
-        if (onStrokeRecordFinishListener != null) {
-            onStrokeRecordFinishListener.onPathDrawFinish(strokeRecord);
+        if (onStrokeRecordChangeListener != null) {
+            onStrokeRecordChangeListener.onPathDrawFinish(strokeRecord);
+        }
+    }
+
+    private void notifyDeleteListener(long uid,int sq){
+        if (onStrokeRecordChangeListener != null) {
+            onStrokeRecordChangeListener.onPathDeleted(uid, sq);
+        }
+    }
+
+    private void notifyClearListener(){
+        if (onStrokeRecordChangeListener != null) {
+            onStrokeRecordChangeListener.onPathCleared();
         }
     }
 
@@ -419,16 +433,36 @@ public class SketchView extends View {
         return bitmap;
     }
 
+    /**
+     * 删除某人的某笔
+     * @param uid
+     * @param sq
+     */
+    public void deleteRecord(long uid, int sq,boolean manual) {
+        List<StrokeRecord> strokeRecordList = curSketchData.strokeRecordList;
+        Iterator<StrokeRecord> iterator = strokeRecordList.iterator();
+        while (iterator.hasNext()) {
+            StrokeRecord strokeRecord = iterator.next();
+            if (strokeRecord.id == sq && strokeRecord.userid == uid) {
+                iterator.remove();
+                curSketchData.strokeRedoList.add(strokeRecord);
+            }
+        }
+        if (manual) {
+            notifyDeleteListener(uid, sq);
+        }
+        invalidate();
+    }
 
     /*
      * 删除一笔
      */
     public void undo() {
-        int recordSize = curSketchData.strokeRecordList.size();
+        List<StrokeRecord> strokeRecordList = curSketchData.strokeRecordList;
+        int recordSize = strokeRecordList.size();
         if (recordSize > 0) {
-            StrokeRecord lastRecord = curSketchData.strokeRecordList.remove(recordSize - 1);
-            curSketchData.strokeRedoList.add(lastRecord);
-            invalidate();
+            StrokeRecord lastRecord = strokeRecordList.get(recordSize - 1);
+            deleteRecord(lastRecord.userid, lastRecord.id,true);
         }
     }
 
@@ -436,11 +470,21 @@ public class SketchView extends View {
      * 撤销
      */
     public void redo() {
-        int redoSize = curSketchData.strokeRedoList.size();
+        List<StrokeRecord> strokeRedoList = curSketchData.strokeRedoList;
+        int redoSize = strokeRedoList.size();
         if (redoSize > 0) {
-            StrokeRecord redoRecord = curSketchData.strokeRedoList.remove(redoSize - 1);
-            curSketchData.strokeRecordList.add(redoRecord);
-            notifyDrawListener(redoRecord);
+            StrokeRecord redoRecord = strokeRedoList.get(redoSize - 1);
+            long uid = redoRecord.userid;
+            int sq = redoRecord.id;
+            Iterator<StrokeRecord> iterator = strokeRedoList.iterator();
+            while (iterator.hasNext()) {
+                StrokeRecord next = iterator.next();
+                if (next.userid == uid && next.id == sq) {
+                    iterator.remove();
+                    curSketchData.strokeRecordList.add(next);
+                    notifyDrawListener(next);
+                }
+            }
             invalidate();
         }
     }
@@ -473,7 +517,10 @@ public class SketchView extends View {
 
     }
 
-    public void erase() {
+    public void erase(boolean manual) {
+        if (manual) {
+            notifyClearListener();
+        }
         if (curSketchData.backgroundBitmap != null && !curSketchData.backgroundBitmap.isRecycled()) {
             // 回收并且置为null
             curSketchData.backgroundBitmap.recycle();
@@ -483,11 +530,15 @@ public class SketchView extends View {
         curSketchData.strokeRedoList.clear();
 
         tempCanvas = null;
-        tempBitmap.recycle();
-        tempBitmap = null;
+        if (tempBitmap != null) {
+            tempBitmap.recycle();
+            tempBitmap = null;
+        }
         tempHoldCanvas = null;
-        tempHoldBitmap.recycle();
-        tempHoldBitmap = null;
+        if (tempHoldBitmap != null) {
+            tempHoldBitmap.recycle();
+            tempHoldBitmap = null;
+        }
         System.gc();
         invalidate();
     }
@@ -533,8 +584,8 @@ public class SketchView extends View {
         return mHeight;
     }
 
-    public void setOnStrokeRecordFinishListener(OnStrokeRecordFinishListener listener){
-        onStrokeRecordFinishListener = listener;
+    public void setOnStrokeRecordChangeListener(OnStrokeRecordChangeListener listener){
+        onStrokeRecordChangeListener = listener;
     }
 
     public interface TextWindowCallback {
@@ -545,7 +596,9 @@ public class SketchView extends View {
         void onDrawChanged();
     }
 
-    public interface OnStrokeRecordFinishListener {
+    public interface OnStrokeRecordChangeListener {
         void onPathDrawFinish(StrokeRecord strokeRecord);
+        void onPathDeleted(long userid, int sq);
+        void onPathCleared();
     }
 }

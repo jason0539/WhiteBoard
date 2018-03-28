@@ -8,13 +8,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.lzh.testwb.socket.SocketTransceiver;
 import com.lzh.testwb.socket.TcpClient;
 import com.lzh.testwb.util.UtilThread;
-import com.lzh.whiteboardlib.utils.MLog;
-import com.lzh.whiteboardlib.bean.StrokeRecord;
-import com.lzh.whiteboardlib.TransUtils;
 import com.lzh.whiteboardlib.SketchView;
+import com.lzh.whiteboardlib.TransUtils;
+import com.lzh.whiteboardlib.WhiteBoardCmd;
+import com.lzh.whiteboardlib.bean.StrokeRecord;
+import com.lzh.whiteboardlib.utils.MLog;
 
 import java.util.List;
 
@@ -58,8 +61,20 @@ public class SocketSketchActivity extends AppCompatActivity  {
                 @Override
                 public void run() {
                     MLog.d(MLog.TAG_SOCKET,"SocketSketchActivity->run " + s);
-                    StrokeRecord strokeRecord = TransUtils.resumeStrokeRecord(s);
-                    mSketchView.addStrokePath(strokeRecord);
+                    WhiteBoardCmd wbStroke = JSON.parseObject(s, WhiteBoardCmd.class);
+                        switch (wbStroke.getCmd()) {
+                            case WhiteBoardCmd.CMD_CLEAR:
+                                mSketchView.erase(false);
+                                break;
+                            case WhiteBoardCmd.CMD_DRAW:
+                                StrokeRecord strokeRecord = TransUtils.resumeStrokeRecord(wbStroke);
+                                mSketchView.addStrokePath(strokeRecord);
+                                break;
+                            case WhiteBoardCmd.CMD_DELETE:
+                                mSketchView.deleteRecord(wbStroke.getUid(), wbStroke.getSq(),false);
+                                break;
+                        }
+
                 }
             });
         }
@@ -90,7 +105,7 @@ public class SocketSketchActivity extends AppCompatActivity  {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mSketchView = whiteBoardFragment.getSketchView();
-        mSketchView.setOnStrokeRecordFinishListener(new SketchView.OnStrokeRecordFinishListener() {
+        mSketchView.setOnStrokeRecordChangeListener(new SketchView.OnStrokeRecordChangeListener() {
             @Override
             public void onPathDrawFinish(final StrokeRecord strokeRecord) {
                 UtilThread.execute(new Runnable() {
@@ -101,6 +116,38 @@ public class SocketSketchActivity extends AppCompatActivity  {
                             for (String strokeRecordString : strokeRecordStrings) {
                                 client.getTransceiver().send(strokeRecordString);
                             }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onPathDeleted(final long userid, final int sq) {
+                UtilThread.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (client.isConnected()) {
+                            WhiteBoardCmd cmd = new WhiteBoardCmd();
+                            cmd.setCmd(WhiteBoardCmd.CMD_DELETE);
+                            cmd.setUid(userid);
+                            cmd.setSq(sq);
+                            String cmdStr = JSONObject.toJSONString(cmd);
+                            client.getTransceiver().send(cmdStr);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onPathCleared() {
+                UtilThread.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (client.isConnected()) {
+                            WhiteBoardCmd cmd = new WhiteBoardCmd();
+                            cmd.setCmd(WhiteBoardCmd.CMD_CLEAR);
+                            String cmdStr = JSONObject.toJSONString(cmd);
+                            client.getTransceiver().send(cmdStr);
                         }
                     }
                 });
