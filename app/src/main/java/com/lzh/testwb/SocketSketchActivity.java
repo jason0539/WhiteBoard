@@ -16,6 +16,8 @@ import com.lzh.whiteboardlib.bean.StrokeRecord;
 import com.lzh.whiteboardlib.TransUtils;
 import com.lzh.whiteboardlib.SketchView;
 
+import java.util.List;
+
 /**
  * Created by liuzhenhui on 2018/3/13.
  */
@@ -95,8 +97,10 @@ public class SocketSketchActivity extends AppCompatActivity  {
                     @Override
                     public void run() {
                         if (client.isConnected()) {
-                            String stroRecordString = TransUtils.transStrokeRecord(strokeRecord);
-                            client.getTransceiver().send(stroRecordString);
+                            List<String> strokeRecordStrings = TransUtils.transStrokeRecord(strokeRecord);
+                            for (String strokeRecordString : strokeRecordStrings) {
+                                client.getTransceiver().send(strokeRecordString);
+                            }
                         }
                     }
                 });

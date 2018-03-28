@@ -32,7 +32,10 @@ public class TransUtils {
     public static final String transStrokeRecordList(List<StrokeRecord> strokeRecordList) {
         List<String> strokeRecordStringList = new ArrayList<>();
         for (StrokeRecord strokeRecord : strokeRecordList) {
-            strokeRecordStringList.add(transStrokeRecord(strokeRecord));
+            List<String> strokeRecordStrings = transStrokeRecord(strokeRecord);
+            for (String string : strokeRecordStrings) {
+                strokeRecordStringList.add(string);
+            }
         }
         String sketchDataString = JSONObject.toJSONString(strokeRecordStringList);
         return sketchDataString;
@@ -55,7 +58,14 @@ public class TransUtils {
     /**
      * 把一笔轨迹转成string
      */
-    public static final String transStrokeRecord(StrokeRecord strokeRecord) {
+    public static final List<String> transStrokeRecord(StrokeRecord strokeRecord) {
+        if (WhiteBoardStroke.isStrokeRecordNeedSplit(strokeRecord)) {
+            StrokeRecord[] strokeRecords = WhiteBoardStroke.splitStrokeRecord(strokeRecord);
+            List<String> firstHalf = transStrokeRecord(strokeRecords[0]);
+            List<String> secondHalf = transStrokeRecord(strokeRecords[1]);
+            firstHalf.addAll(secondHalf);
+            return firstHalf;
+        }
         long uid = strokeRecord.userid;
         int sq = strokeRecord.id;
         int type = strokeRecord.type;
@@ -83,7 +93,9 @@ public class TransUtils {
 
         }
         WhiteBoardStroke whiteBoardStroke = new WhiteBoardStroke(uid,sq,p,w,c,type);
-        return JSONObject.toJSONString(whiteBoardStroke);
+        ArrayList arrayList = new ArrayList<>();
+        arrayList.add(JSONObject.toJSONString(whiteBoardStroke));
+        return arrayList;
     }
 
     /**
