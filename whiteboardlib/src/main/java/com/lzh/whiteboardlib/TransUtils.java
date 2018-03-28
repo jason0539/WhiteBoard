@@ -13,6 +13,7 @@ import com.lzh.whiteboardlib.bean.StrokePath;
 import com.lzh.whiteboardlib.bean.StrokePoint;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
 import com.lzh.whiteboardlib.utils.PaintUtils;
+import com.lzh.whiteboardlib.utils.UtilBessel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +125,11 @@ public class TransUtils {
                     for (int currIndex = 1; currIndex < sizeTotal; currIndex++) {
                         prePoint = strokePointList.get(preIndex);
                         currPoint = strokePointList.get(currIndex);
-                        strokePath.quadTo(prePoint.getX(), prePoint.getY(), (prePoint.getX() + currPoint.getX()) / 2, (prePoint.getY() + currPoint.getY()) / 2);
+                        float preX = prePoint.getX();
+                        float curX = currPoint.getX();
+                        float preY = prePoint.getY();
+                        float curY = currPoint.getY();
+                        strokePath.quadTo(UtilBessel.ctrlX(preX, curX), UtilBessel.ctrlY(preY, curY), UtilBessel.endX(preX, curX), UtilBessel.endY(preY, curY));
                         preIndex = currIndex;
                         if (currIndex == sizeTotal - 1) {
                             //最后一个，end
