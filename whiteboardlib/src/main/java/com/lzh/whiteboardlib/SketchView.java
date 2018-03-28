@@ -42,7 +42,6 @@ import com.lzh.whiteboardlib.bean.StrokePath;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
 import com.lzh.whiteboardlib.utils.BitmapUtils;
 import com.lzh.whiteboardlib.utils.DensityUtil;
-import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.utils.MathUtil;
 import com.lzh.whiteboardlib.utils.PaintUtils;
 import com.lzh.whiteboardlib.utils.UtilBessel;
@@ -183,20 +182,20 @@ public class SketchView extends View {
             curY = (event.getY() - mOffset.y)/mScale;
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
+//                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
                     break;
                 case MotionEvent.ACTION_DOWN:
-                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_DOWN");
+//                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_DOWN");
                     touch_down();
                     invalidate();
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_MOVE");
+//                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_MOVE");
                     touch_move(event);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_UP:
-                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_UP");
+//                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_UP");
                     touch_up();
                     invalidate();
                     break;
