@@ -51,4 +51,14 @@ public class StrokeRecord {
         this.type = type;
         this.id = id;
     }
+
+    public StrokeRecord clone() {
+        StrokeRecord strokeRecord = new StrokeRecord(userid, type, id);
+        strokeRecord.path = path;
+        strokeRecord.paint = paint;
+        strokeRecord.rect = rect;
+        strokeRecord.text = text;
+        strokeRecord.textPaint = textPaint;
+        return strokeRecord;
+    }
 }
