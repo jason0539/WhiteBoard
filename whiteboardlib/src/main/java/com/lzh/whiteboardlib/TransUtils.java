@@ -59,8 +59,8 @@ public class TransUtils {
      * 把一笔轨迹转成string
      */
     public static final List<String> transStrokeRecord(StrokeRecord strokeRecord) {
-        if (WhiteBoardStroke.isStrokeRecordNeedSplit(strokeRecord)) {
-            StrokeRecord[] strokeRecords = WhiteBoardStroke.splitStrokeRecord(strokeRecord);
+        if (WhiteBoardCmd.isStrokeRecordNeedSplit(strokeRecord)) {
+            StrokeRecord[] strokeRecords = WhiteBoardCmd.splitStrokeRecord(strokeRecord);
             List<String> firstHalf = transStrokeRecord(strokeRecords[0]);
             List<String> secondHalf = transStrokeRecord(strokeRecords[1]);
             firstHalf.addAll(secondHalf);
@@ -92,9 +92,9 @@ public class TransUtils {
         }else if (type == StrokeRecord.STROKE_TYPE_TEXT) {
 
         }
-        WhiteBoardStroke whiteBoardStroke = new WhiteBoardStroke(uid,sq,p,w,c,type);
+        WhiteBoardCmd whiteBoardCmd = new WhiteBoardCmd(uid,sq,p,w,c,type);
         ArrayList arrayList = new ArrayList<>();
-        arrayList.add(JSONObject.toJSONString(whiteBoardStroke));
+        arrayList.add(JSONObject.toJSONString(whiteBoardCmd));
         return arrayList;
     }
 
@@ -102,7 +102,7 @@ public class TransUtils {
      * 从string恢复一笔轨迹
      */
     public static StrokeRecord resumeStrokeRecord(String recordString) {
-        WhiteBoardStroke wbStroke = JSON.parseObject(recordString, WhiteBoardStroke.class);
+        WhiteBoardCmd wbStroke = JSON.parseObject(recordString, WhiteBoardCmd.class);
         StrokeRecord strokeRecord = new StrokeRecord(wbStroke.uid,wbStroke.type,wbStroke.sq);
         int type = strokeRecord.type;
         Paint paint = PaintUtils.createDefaultStrokePaint();

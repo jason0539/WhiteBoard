@@ -12,7 +12,7 @@ import java.util.List;
  * 持久化保存的白板数据结构
  */
 
-public class WhiteBoardStroke {
+public class WhiteBoardCmd {
     //总长度限制（x字节）- uid（8字节） - sq（4字节） - w（8字节） - type（4字节）- c（8个字符8字节）
     //除以每个坐标长度（4字节）得出每个WhiteBoardStroke能够容纳的最多StrokePoint数量
     public static final int MAX_LENGTH = (500 - 8 - 4 - 8 - 4 - 8) / 4;
@@ -30,11 +30,11 @@ public class WhiteBoardStroke {
     //线段类型：0曲线，1圆，2线段，3矩形，4橡皮擦
     int type;
 
-    public WhiteBoardStroke() {
+    public WhiteBoardCmd() {
 
     }
 
-    public WhiteBoardStroke(long uid, int sq, String p, float w, String c, int type) {
+    public WhiteBoardCmd(long uid, int sq, String p, float w, String c, int type) {
         this.uid = uid;
         this.sq = sq;
         this.p = p;
@@ -92,7 +92,7 @@ public class WhiteBoardStroke {
     }
 
     public static boolean isStrokeRecordNeedSplit(StrokeRecord strokeRecord) {
-        return strokeRecord.path != null && strokeRecord.path.getPathPoints().size() > WhiteBoardStroke.MAX_LENGTH;
+        return strokeRecord.path != null && strokeRecord.path.getPathPoints().size() > WhiteBoardCmd.MAX_LENGTH;
     }
 
     public static StrokeRecord[] splitStrokeRecord(StrokeRecord strokeRecord) {
