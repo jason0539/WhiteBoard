@@ -45,6 +45,7 @@ import com.lzh.whiteboardlib.utils.DensityUtil;
 import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.utils.MathUtil;
 import com.lzh.whiteboardlib.utils.PaintUtils;
+import com.lzh.whiteboardlib.utils.UtilBessel;
 
 import java.util.UUID;
 
@@ -355,9 +356,9 @@ public class SketchView extends View {
             needCheckTolerance = false;
             if (curSketchData.editMode == MODE_STROKE) {
                 if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
-                    strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
+                    strokePath.quadTo(UtilBessel.ctrlX(preX, curX), UtilBessel.ctrlY(preY,curY), UtilBessel.endX(preX, curX), UtilBessel.endY(preY, curY));
                 } else if (curSketchData.strokeType == STROKE_TYPE_DRAW) {
-                    strokePath.quadTo(preX, preY, (curX + preX) / 2, (curY + preY) / 2);
+                    strokePath.quadTo(UtilBessel.ctrlX(preX, curX), UtilBessel.ctrlY(preY,curY), UtilBessel.endX(preX, curX), UtilBessel.endY(preY, curY));
                 } else if (curSketchData.strokeType == STROKE_TYPE_LINE) {
                     strokePath.reset();
                     strokePath.moveTo(downX, downY);
