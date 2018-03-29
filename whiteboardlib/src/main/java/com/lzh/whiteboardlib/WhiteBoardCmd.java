@@ -124,9 +124,12 @@ public class WhiteBoardCmd {
         ArrayList<StrokePoint> pathPoints = strokePath.getPathPoints();
         int size = pathPoints.size();
         List<StrokePoint> firstHalf = pathPoints.subList(0, size / 2);
-        List<StrokePoint> sencondHalf = pathPoints.subList(size / 2, size);
+        List<StrokePoint> sencondHalf = new ArrayList<>(pathPoints.subList(size / 2, size));
 
-        //todo 后半段补充一个起点,保证被切分后没有断线
+        // 后半段补充一个前半段结尾的地方作为起点,防止断线
+        StrokePoint prePoint = pathPoints.get(size / 2 - 2);
+        StrokePoint currPoint = pathPoints.get(size / 2 - 1);
+        sencondHalf.add(0,new StrokePoint((prePoint.getX()+currPoint.getX())/2,(prePoint.getY()+currPoint.getY())/2));
 
         //前半段
         StrokePath firstHalfPath = new StrokePath();
