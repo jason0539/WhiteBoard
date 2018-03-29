@@ -17,7 +17,7 @@ public abstract class TcpServer implements Runnable {
 
 	private int port;
 	private boolean runFlag;
-	private List<SocketTransceiver> clients = new ArrayList<SocketTransceiver>();
+	protected List<SocketTransceiver> clients = new ArrayList<SocketTransceiver>();
 
 	/**
 	 * 实例化
@@ -92,7 +92,9 @@ public abstract class TcpServer implements Runnable {
 
 			@Override
 			public void onReceive(InetAddress addr, String s) {
-				TcpServer.this.onReceive(clients, s);
+				String clientIp = socket.getInetAddress().getHostAddress();
+				System.out.println("服务器收到客户端消息，来自"+clientIp);
+				TcpServer.this.onReceive(clientIp, s);
 			}
 
 			@Override
@@ -133,7 +135,7 @@ public abstract class TcpServer implements Runnable {
 	 * @param s
 	 *            字符串
 	 */
-	public abstract void onReceive(List<SocketTransceiver> client, String s);
+	public abstract void onReceive(String ipFrom, String s);
 
 	/**
 	 * 客户端：连接断开

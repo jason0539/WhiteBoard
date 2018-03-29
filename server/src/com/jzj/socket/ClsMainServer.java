@@ -1,7 +1,5 @@
 package com.jzj.socket;
 
-import java.util.List;
-
 public class ClsMainServer {
 
 	public static void main(String[] args) {
@@ -19,10 +17,17 @@ public class ClsMainServer {
 			}
 
 			@Override
-			public void onReceive(List<SocketTransceiver> clients, String s) {
+			public void onReceive(String from, String s) {
+				System.out.println("遍历客户端发送消息");
 				for (SocketTransceiver client : clients) {
-					printInfo(client, "Send Data: " + s);
-					client.send(s);
+					String targetAddr = client.getInetAddress().getHostAddress();
+					if (!from.equals(targetAddr)) {
+						System.out.println("发送给"+targetAddr);
+						printInfo(client, "Send Data: " + s);
+						client.send(s);
+					}else {
+						System.out.println("不给"+targetAddr+"发送");
+					}
 				}
 			}
 
@@ -43,5 +48,6 @@ public class ClsMainServer {
 	static void printInfo(SocketTransceiver st, String msg) {
 		System.out.println("Client " + st.getInetAddress().getHostAddress());
 		System.out.println("  " + msg);
+		System.out.println("  \n\n");
 	}
 }
