@@ -66,9 +66,6 @@ public class SketchView extends View {
     public static final int DEFAULT_STROKE_ALPHA = 100;
     public static final int DEFAULT_ERASER_SIZE = 50;
     public static final float TOUCH_TOLERANCE = 10;
-    public static final int ACTION_NONE = 0;
-    public static float SCALE_MAX = 4.0f;
-    public static float SCALE_MIN = 0.2f;
     public static float SCALE_MIN_LEN;
     public Paint boardPaint;
 
@@ -80,7 +77,6 @@ public class SketchView extends View {
     public Rect backgroundDstRect = new Rect();
     public int defaultBgColor = Color.WHITE;
     public StrokeRecord curStrokeRecord;
-    public int actionMode;
     public TextWindowCallback textWindowCallback;
     public float strokeSize = DEFAULT_STROKE_SIZE;
     public int strokeRealColor = Color.BLACK;//画笔实际颜色
