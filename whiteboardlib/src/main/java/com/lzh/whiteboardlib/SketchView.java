@@ -29,8 +29,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -46,7 +44,6 @@ import com.lzh.whiteboardlib.utils.MathUtil;
 import com.lzh.whiteboardlib.utils.PaintUtils;
 import com.lzh.whiteboardlib.utils.UtilBessel;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,7 +72,10 @@ public class SketchView extends View {
     public static float SCALE_MIN_LEN;
     public Paint boardPaint;
 
-    public SketchData curSketchData;
+    public int strokeType;
+    public int editMode;
+    public Bitmap backgroundBitmap;
+    public SketchPainter mSketchPainter;
     public Rect backgroundSrcRect = new Rect();
     public Rect backgroundDstRect = new Rect();
     public int defaultBgColor = Color.WHITE;
@@ -99,6 +99,9 @@ public class SketchView extends View {
     public SketchView(Context context, AttributeSet attr) {
         super(context, attr);
         this.mContext = context;
+        strokeType = StrokeRecord.STROKE_TYPE_DRAW;
+        editMode = SketchView.MODE_STROKE;
+        mSketchPainter = new SketchPainter(this);
         setSketchData(new SketchData());
         initParams(context);
         invalidate();
@@ -109,20 +112,19 @@ public class SketchView extends View {
     }
 
     public int getStrokeType() {
-        return curSketchData.strokeType;
+        return strokeType;
     }
 
     public void setStrokeType(int strokeType) {
-        this.curSketchData.strokeType = strokeType;
+        this.strokeType = strokeType;
     }
 
     public void setSketchData(SketchData sketchData) {
-        this.curSketchData = sketchData;
+        mSketchPainter.setSketchData(sketchData);
     }
 
     public void addStrokePath(StrokeRecord strokeRecord) {
-        curSketchData.strokeRecordList.add(strokeRecord);
-        invalidate();
+        mSketchPainter.addStrokePath(strokeRecord);
     }
 
     public void initParams(Context context) {
@@ -178,7 +180,7 @@ public class SketchView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (curSketchData.editMode == MODE_STROKE) {
+        if (editMode == MODE_STROKE) {
             //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
             curX = (event.getX() - mOffset.x)/mScale;
             curY = (event.getY() - mOffset.y)/mScale;
@@ -211,87 +213,22 @@ public class SketchView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         drawBackground(canvas);
-        drawRecord(canvas,true);
+        mSketchPainter.drawRecord(canvas,true);
         if (onDrawChangedListener != null) {
             onDrawChangedListener.onDrawChanged();
         }
     }
 
     public void drawBackground(Canvas canvas) {
-        if (curSketchData.backgroundBitmap != null) {
+        if (backgroundBitmap != null) {
             Matrix matrix = new Matrix();
-            float wScale = (float) canvas.getWidth() / curSketchData.backgroundBitmap.getWidth();
-            float hScale = (float) canvas.getHeight() / curSketchData.backgroundBitmap.getHeight();
+            float wScale = (float) canvas.getWidth() / backgroundBitmap.getWidth();
+            float hScale = (float) canvas.getHeight() / backgroundBitmap.getHeight();
             matrix.postScale(wScale, hScale);
-            canvas.drawBitmap(curSketchData.backgroundBitmap, matrix, null);
+            canvas.drawBitmap(backgroundBitmap, matrix, null);
         } else {
             canvas.drawColor(defaultBgColor);
         }
-    }
-
-    public Bitmap tempBitmap;//临时绘制的bitmap
-    public Canvas tempCanvas;
-    public Bitmap tempHoldBitmap;//保存已固化的笔画bitmap
-    public Canvas tempHoldCanvas;
-
-    public void drawRecord(Canvas canvas, boolean isDrawBoard) {
-        if (curSketchData != null) {
-            //新建一个临时画布，以便橡皮擦生效
-            if (tempBitmap == null) {
-                tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_4444);
-                tempCanvas = new Canvas(tempBitmap);
-            }
-            //新建一个临时画布，以便保存过多的画笔
-            if (tempHoldBitmap == null) {
-                tempHoldBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_4444);
-                tempHoldCanvas = new Canvas(tempHoldBitmap);
-            }
-            //节省性能把10笔以前的全都画(保存)进固化层(tempHoldBitmap),移除record历史
-            //从而每次10笔以前的一次性从tempHoldBitmap绘制过来，其他重绘最多10笔，
-            while (curSketchData.strokeRecordList.size() > Integer.MAX_VALUE) {
-                StrokeRecord record = curSketchData.strokeRecordList.remove(0);
-                drawRecordToCanvas(tempHoldCanvas,record);
-            }
-            clearCanvas(tempCanvas);//清空画布
-            tempCanvas.drawColor(Color.TRANSPARENT);
-            tempCanvas.drawBitmap(tempHoldBitmap, new Rect(0, 0, tempHoldBitmap.getWidth(), tempHoldBitmap.getHeight()), new Rect(0, 0, tempCanvas.getWidth(), tempCanvas.getHeight()), null);
-            for (StrokeRecord record : curSketchData.strokeRecordList) {
-                drawRecordToCanvas(tempCanvas,record);
-            }
-            canvas.drawBitmap(tempBitmap, new Rect(0, 0, tempCanvas.getWidth(), tempCanvas.getHeight()), new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), null);
-        }
-    }
-
-    private void drawRecordToCanvas(Canvas canvas, StrokeRecord record) {
-        int type = record.type;
-        if (type == StrokeRecord.STROKE_TYPE_ERASER) {//橡皮擦需要在固化层也绘制
-            canvas.drawPath(record.path, record.paint);
-        } else if (type == StrokeRecord.STROKE_TYPE_DRAW || type == StrokeRecord.STROKE_TYPE_LINE) {
-            canvas.drawPath(record.path, record.paint);
-        } else if (type == STROKE_TYPE_CIRCLE) {
-            canvas.drawOval(record.rect, record.paint);
-        } else if (type == STROKE_TYPE_RECTANGLE) {
-            canvas.drawRect(record.rect, record.paint);
-        } else if (type == STROKE_TYPE_TEXT) {
-            if (record.text != null) {
-                StaticLayout layout = new StaticLayout(record.text, record.textPaint, record.textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true);
-                canvas.translate(record.textOffX, record.textOffY);
-                layout.draw(canvas);
-                canvas.translate(-record.textOffX, -record.textOffY);
-            }
-        }
-    }
-
-    /**
-     * 清理画布canvas
-     *
-     * @param temptCanvas
-     */
-    public void clearCanvas(Canvas temptCanvas) {
-        Paint p = new Paint();
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        temptCanvas.drawPaint(p);
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
     }
 
     public float getMaxScale(RectF photoSrc) {
@@ -300,45 +237,42 @@ public class SketchView extends View {
     }
 
     public void addStrokeRecord(StrokeRecord record) {
-        curSketchData.strokeRecordList.add(record);
-        invalidate();
+        mSketchPainter.addStrokeRecord(record);
     }
 
     public void touch_down() {
         downX = curX;
         downY = curY;
         needCheckTolerance = true;
-        if (curSketchData.editMode == MODE_STROKE) {
-            //进行新的绘制时，清空redo栈（如果要保留，注释这行即可）
-            curSketchData.strokeRedoList.clear();
-            curStrokeRecord = new StrokeRecord(USER_ID,curSketchData.strokeType);
+        if (editMode == MODE_STROKE) {
+            curStrokeRecord = new StrokeRecord(USER_ID,strokeType);
             strokePaint.setAntiAlias(true);//由于降低密度绘制，所以需要抗锯齿
-            if (curSketchData.strokeType == StrokeRecord.STROKE_TYPE_ERASER) {
+            if (strokeType == StrokeRecord.STROKE_TYPE_ERASER) {
                 strokePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));//关键代码
             } else {
                 strokePaint.setXfermode(null);//关键代码
             }
-            if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
+            if (strokeType == STROKE_TYPE_ERASER) {
                 strokePath = new StrokePath();
                 strokePath.moveTo(downX, downY);
                 strokePaint.setColor(Color.WHITE);
                 strokePaint.setStrokeWidth(eraserSize);
                 curStrokeRecord.paint = new Paint(strokePaint); // Clones the mPaint object
                 curStrokeRecord.path = strokePath;
-            } else if (curSketchData.strokeType == STROKE_TYPE_DRAW || curSketchData.strokeType == STROKE_TYPE_LINE) {
+            } else if (strokeType == STROKE_TYPE_DRAW || strokeType == STROKE_TYPE_LINE) {
                 strokePath = new StrokePath();
                 strokePath.moveTo(downX, downY);
                 curStrokeRecord.path = strokePath;
                 strokePaint.setColor(strokeRealColor);
                 strokePaint.setStrokeWidth(strokeSize);
                 curStrokeRecord.paint = new Paint(strokePaint); // Clones the mPaint object
-            } else if (curSketchData.strokeType == STROKE_TYPE_CIRCLE || curSketchData.strokeType == STROKE_TYPE_RECTANGLE) {
+            } else if (strokeType == STROKE_TYPE_CIRCLE || strokeType == STROKE_TYPE_RECTANGLE) {
                 RectF rect = new RectF(downX, downY, downX, downY);
                 curStrokeRecord.rect = rect;
                 strokePaint.setColor(strokeRealColor);
                 strokePaint.setStrokeWidth(strokeSize);
                 curStrokeRecord.paint = new Paint(strokePaint); // Clones the mPaint object
-            } else if (curSketchData.strokeType == STROKE_TYPE_TEXT) {
+            } else if (strokeType == STROKE_TYPE_TEXT) {
                 curStrokeRecord.textOffX = (int) downX;
                 curStrokeRecord.textOffY = (int) downY;
                 TextPaint tp = new TextPaint();
@@ -347,7 +281,7 @@ public class SketchView extends View {
                 textWindowCallback.onText(this, curStrokeRecord);
                 return;
             }
-            curSketchData.strokeRecordList.add(curStrokeRecord);
+            mSketchPainter.addStrokeRecord(curStrokeRecord);
         }
     }
 
@@ -355,18 +289,18 @@ public class SketchView extends View {
         if (!needCheckTolerance ||
                 (needCheckTolerance && MathUtil.rectDiagonal(curX-downX, curY- downY) > TOUCH_TOLERANCE)) {
             needCheckTolerance = false;
-            if (curSketchData.editMode == MODE_STROKE) {
-                if (curSketchData.strokeType == STROKE_TYPE_ERASER) {
+            if (editMode == MODE_STROKE) {
+                if (strokeType == STROKE_TYPE_ERASER) {
                     strokePath.quadTo(UtilBessel.ctrlX(preX, curX), UtilBessel.ctrlY(preY,curY), UtilBessel.endX(preX, curX), UtilBessel.endY(preY, curY));
-                } else if (curSketchData.strokeType == STROKE_TYPE_DRAW) {
+                } else if (strokeType == STROKE_TYPE_DRAW) {
                     strokePath.quadTo(UtilBessel.ctrlX(preX, curX), UtilBessel.ctrlY(preY,curY), UtilBessel.endX(preX, curX), UtilBessel.endY(preY, curY));
-                } else if (curSketchData.strokeType == STROKE_TYPE_LINE) {
+                } else if (strokeType == STROKE_TYPE_LINE) {
                     strokePath.reset();
                     strokePath.moveTo(downX, downY);
                     strokePath.lineTo(curX, curY);
-                } else if (curSketchData.strokeType == STROKE_TYPE_CIRCLE || curSketchData.strokeType == STROKE_TYPE_RECTANGLE) {
+                } else if (strokeType == STROKE_TYPE_CIRCLE || strokeType == STROKE_TYPE_RECTANGLE) {
                     curStrokeRecord.rect.set(downX < curX ? downX : curX, downY < curY ? downY : curY, downX > curX ? downX : curX, downY > curY ? downY : curY);
-                } else if (curSketchData.strokeType == STROKE_TYPE_TEXT) {
+                } else if (strokeType == STROKE_TYPE_TEXT) {
 
                 }
             }
@@ -409,7 +343,7 @@ public class SketchView extends View {
     }
 
     public SketchData getSketchData() {
-        return curSketchData;
+        return mSketchPainter.getSketchData();
     }
 
     @NonNull
@@ -421,7 +355,7 @@ public class SketchView extends View {
 //        canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));//抗锯齿
         //绘制背景
         drawBackground(canvas);
-        drawRecord(canvas, false);
+        mSketchPainter.drawRecord(canvas, false);
 
         if (addBitmap != null) {
             canvas.drawBitmap(addBitmap, 0, 0, null);
@@ -438,31 +372,20 @@ public class SketchView extends View {
      * @param uid
      * @param sq
      */
-    public void deleteRecord(long uid, int sq,boolean manual) {
-        List<StrokeRecord> strokeRecordList = curSketchData.strokeRecordList;
-        Iterator<StrokeRecord> iterator = strokeRecordList.iterator();
-        while (iterator.hasNext()) {
-            StrokeRecord strokeRecord = iterator.next();
-            if (strokeRecord.id == sq && strokeRecord.userid == uid) {
-                iterator.remove();
-                curSketchData.strokeRedoList.add(strokeRecord);
-            }
-        }
+    public void deleteRecord(long uid, int sq, boolean manual) {
+        mSketchPainter.deleteRecord(uid,sq);
         if (manual) {
             notifyDeleteListener(uid, sq);
         }
-        invalidate();
     }
 
     /*
      * 删除一笔
      */
-    public void undo() {
-        List<StrokeRecord> strokeRecordList = curSketchData.strokeRecordList;
-        int recordSize = strokeRecordList.size();
-        if (recordSize > 0) {
-            StrokeRecord lastRecord = strokeRecordList.get(recordSize - 1);
-            deleteRecord(lastRecord.userid, lastRecord.id,true);
+    public void undo(){
+        StrokeRecord undo = mSketchPainter.undo();
+        if (undo != null) {
+            deleteRecord(undo.userid, undo.id,true);
         }
     }
 
@@ -470,39 +393,22 @@ public class SketchView extends View {
      * 撤销
      */
     public void redo() {
-        List<StrokeRecord> strokeRedoList = curSketchData.strokeRedoList;
-        int redoSize = strokeRedoList.size();
-        if (redoSize > 0) {
-            StrokeRecord redoRecord = strokeRedoList.get(redoSize - 1);
-            long uid = redoRecord.userid;
-            int sq = redoRecord.id;
-            Iterator<StrokeRecord> iterator = strokeRedoList.iterator();
-            while (iterator.hasNext()) {
-                StrokeRecord next = iterator.next();
-                if (next.userid == uid && next.id == sq) {
-                    iterator.remove();
-                    curSketchData.strokeRecordList.add(next);
-                    notifyDrawListener(next);
-                }
-            }
-            invalidate();
+        List<StrokeRecord> redo = mSketchPainter.redo();
+        for (StrokeRecord strokeRecord : redo) {
+            notifyDrawListener(strokeRecord);
         }
     }
 
     public int getRedoCount() {
-        return curSketchData.strokeRedoList != null ? curSketchData.strokeRedoList.size() : 0;
+        return mSketchPainter.getRedoCount();
     }
 
     public int getRecordCount() {
-        return (curSketchData.strokeRecordList != null ) ? curSketchData.strokeRecordList.size() : 0;
+        return mSketchPainter.getRecordCount();
     }
 
     public int getStrokeRecordCount() {
-        return curSketchData.strokeRecordList != null ? curSketchData.strokeRecordList.size() : 0;
-    }
-
-    public int getStrokeSize() {
-        return Math.round(this.strokeSize);
+        return mSketchPainter.getStrokeRecordCount();
     }
 
     public void setSize(int size, int eraserOrStroke) {
@@ -521,34 +427,16 @@ public class SketchView extends View {
         if (manual) {
             notifyClearListener();
         }
-        if (curSketchData.backgroundBitmap != null && !curSketchData.backgroundBitmap.isRecycled()) {
+        mSketchPainter.erase();
+        if (backgroundBitmap != null && !backgroundBitmap.isRecycled()) {
             // 回收并且置为null
-            curSketchData.backgroundBitmap.recycle();
-            curSketchData.backgroundBitmap = null;
+            backgroundBitmap.recycle();
+            backgroundBitmap = null;
         }
-        curSketchData.strokeRecordList.clear();
-        curSketchData.strokeRedoList.clear();
-
-        tempCanvas = null;
-        if (tempBitmap != null) {
-            tempBitmap.recycle();
-            tempBitmap = null;
-        }
-        tempHoldCanvas = null;
-        if (tempHoldBitmap != null) {
-            tempHoldBitmap.recycle();
-            tempHoldBitmap = null;
-        }
-        System.gc();
-        invalidate();
     }
 
     public void setOnDrawChangedListener(OnDrawChangedListener listener) {
         this.onDrawChangedListener = listener;
-    }
-
-    public void setBackgroundByPath(Bitmap bm) {
-        setBackgroundByBitmap(bm);
     }
 
     public void setBackgroundByPath(String path) {
@@ -561,19 +449,18 @@ public class SketchView extends View {
     }
 
     public void setBackgroundByBitmap(Bitmap sampleBM) {
-        curSketchData.backgroundBitmap = sampleBM;
-        backgroundSrcRect = new Rect(0, 0, curSketchData.backgroundBitmap.getWidth(), curSketchData.backgroundBitmap.getHeight());
+        backgroundBitmap = sampleBM;
+        backgroundSrcRect = new Rect(0, 0, backgroundBitmap.getWidth(), backgroundBitmap.getHeight());
         backgroundDstRect = new Rect(0, 0, mWidth, mHeight);
         invalidate();
     }
 
     public int getEditMode() {
-        return curSketchData.editMode;
+        return editMode;
     }
 
     public void setEditMode(int editMode) {
-        this.curSketchData.editMode = editMode;
-        invalidate();
+        this.editMode = editMode;
     }
 
     public static final int getSketchWidth(){
