@@ -68,7 +68,7 @@ public class SocketSketchActivity extends AppCompatActivity  {
                                 break;
                             case WhiteBoardCmd.CMD_DRAW:
                                 StrokeRecord strokeRecord = TransUtils.resumeStrokeRecord(wbStroke);
-                                mSketchView.addStrokePath(strokeRecord);
+                                mSketchView.addStrokeRecord(strokeRecord);
                                 break;
                             case WhiteBoardCmd.CMD_DELETE:
                                 mSketchView.deleteRecord(wbStroke.getUid(), wbStroke.getSq(),false);

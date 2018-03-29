@@ -123,10 +123,6 @@ public class SketchView extends View {
         mSketchPainter.setSketchData(sketchData);
     }
 
-    public void addStrokePath(StrokeRecord strokeRecord) {
-        mSketchPainter.addStrokePath(strokeRecord);
-    }
-
     public void initParams(Context context) {
         setBackgroundColor(Color.WHITE);
 
@@ -405,10 +401,6 @@ public class SketchView extends View {
 
     public int getRecordCount() {
         return mSketchPainter.getRecordCount();
-    }
-
-    public int getStrokeRecordCount() {
-        return mSketchPainter.getStrokeRecordCount();
     }
 
     public void setSize(int size, int eraserOrStroke) {

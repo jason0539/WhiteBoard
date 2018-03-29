@@ -43,11 +43,6 @@ public class SketchPainter {
         return curSketchData;
     }
 
-    public void addStrokePath(StrokeRecord strokeRecord) {
-        curSketchData.strokeRecordList.add(strokeRecord);
-        mView.invalidate();
-    }
-
     public void addStrokeRecord(StrokeRecord record) {
         curSketchData.strokeRecordList.add(record);
         mView.invalidate();
@@ -71,7 +66,12 @@ public class SketchPainter {
                 StrokeRecord record = curSketchData.strokeRecordList.remove(0);
                 drawRecordToCanvas(tempHoldCanvas, record);
             }
-            clearCanvas(tempCanvas);//清空画布
+            //清空画布
+            Paint p = new Paint();
+            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+            tempCanvas.drawPaint(p);
+            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+            //绘制
             tempCanvas.drawColor(Color.TRANSPARENT);
             tempCanvas.drawBitmap(tempHoldBitmap, new Rect(0, 0, tempHoldBitmap.getWidth(), tempHoldBitmap.getHeight()), new Rect(0, 0, tempCanvas.getWidth(), tempCanvas.getHeight()), null);
             for (StrokeRecord record : curSketchData.strokeRecordList) {
@@ -183,17 +183,6 @@ public class SketchPainter {
 
     public int getRecordCount() {
         return (curSketchData.strokeRecordList != null) ? curSketchData.strokeRecordList.size() : 0;
-    }
-
-    public int getStrokeRecordCount() {
-        return curSketchData.strokeRecordList != null ? curSketchData.strokeRecordList.size() : 0;
-    }
-
-    public void clearCanvas(Canvas temptCanvas) {
-        Paint p = new Paint();
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        temptCanvas.drawPaint(p);
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
     }
 
 }

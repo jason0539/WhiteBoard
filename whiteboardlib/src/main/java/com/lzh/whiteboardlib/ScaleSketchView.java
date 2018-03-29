@@ -214,10 +214,6 @@ public class ScaleSketchView extends RelativeLayout {
         pathView.setSize(newSize, drawMode);
     }
 
-    public int getStrokeRecordCount() {
-        return pathView.getStrokeRecordCount();
-    }
-
     public int getRedoCount() {
         return pathView.getRedoCount();
     }
