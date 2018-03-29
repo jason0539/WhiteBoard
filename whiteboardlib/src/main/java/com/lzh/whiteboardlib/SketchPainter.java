@@ -107,31 +107,33 @@ public class SketchPainter {
      * @param uid
      * @param sq
      */
-    public void deleteRecord(long uid, int sq) {
+    public List<StrokeRecord> deleteRecord(long uid, int sq) {
         List<StrokeRecord> strokeRecordList = curSketchData.strokeRecordList;
+        List<StrokeRecord> deletedRecordList = new ArrayList<>();
         Iterator<StrokeRecord> iterator = strokeRecordList.iterator();
         while (iterator.hasNext()) {
             StrokeRecord strokeRecord = iterator.next();
             if (strokeRecord.id == sq && strokeRecord.userid == uid) {
                 iterator.remove();
                 curSketchData.strokeRedoList.add(strokeRecord);
+                deletedRecordList.add(strokeRecord);
             }
         }
         mView.invalidate();
+        return deletedRecordList;
     }
 
     /*
      * 删除一笔
      */
-    public StrokeRecord undo() {
+    public List<StrokeRecord> undo() {
         List<StrokeRecord> strokeRecordList = curSketchData.strokeRecordList;
         int recordSize = strokeRecordList.size();
         if (recordSize > 0) {
             StrokeRecord lastRecord = strokeRecordList.get(recordSize - 1);
-            deleteRecord(lastRecord.userid, lastRecord.id);
-            return lastRecord;
+            return deleteRecord(lastRecord.userid, lastRecord.id);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /*

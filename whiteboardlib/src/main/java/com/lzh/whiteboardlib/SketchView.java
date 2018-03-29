@@ -379,9 +379,9 @@ public class SketchView extends View {
      * 删除一笔
      */
     public void undo(){
-        StrokeRecord undo = mSketchPainter.undo();
-        if (undo != null) {
-            deleteRecord(undo.userid, undo.id,true);
+        List<StrokeRecord> undo = mSketchPainter.undo();
+        if (undo.size()>0) {
+            deleteRecord(undo.get(0).userid, undo.get(0).id,true);
         }
     }
 
