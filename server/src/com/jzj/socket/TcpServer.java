@@ -55,6 +55,11 @@ public abstract class TcpServer implements Runnable {
 	public void run() {
 		try {
 			final ServerSocket server = new ServerSocket(port);
+			try {
+				System.out.println("服务器ip地址："+InetAddress.getLocalHost().getHostAddress());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			while (runFlag) {
 				try {
 					final Socket socket = server.accept();
