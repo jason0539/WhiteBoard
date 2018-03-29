@@ -199,7 +199,7 @@ public class ScaleSketchView extends RelativeLayout {
     }
 
     public void addStrokeRecord(StrokeRecord record) {
-        pathView.addStrokeRecord(record);
+        pathView.addRecord(record);
     }
 
     public Bitmap getResultBitmap() {

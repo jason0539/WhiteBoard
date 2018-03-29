@@ -10,7 +10,7 @@ public interface ISketchView {
 
     SketchData getSketchData();
 
-    void addStrokePath(StrokeRecord strokeRecord);
+    void addRecord(StrokeRecord strokeRecord);
 
     void deleteRecord(long uid, int sq);
 

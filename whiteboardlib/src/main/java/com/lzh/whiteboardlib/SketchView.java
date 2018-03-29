@@ -228,7 +228,7 @@ public class SketchView extends View {
 //        SCALE_MIN = SCALE_MAX / 5;
     }
 
-    public void addStrokeRecord(StrokeRecord record) {
+    public void addRecord(StrokeRecord record) {
         mSketchPainter.addStrokeRecord(record);
     }
 
