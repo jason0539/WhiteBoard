@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -377,11 +378,12 @@ public class WhiteBoardFragment extends TakePhotoFragment implements SketchView.
 
 
     private void findView(View view) {
-        FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.fl_sketch_container);
+        RelativeLayout frameLayout = (RelativeLayout)view.findViewById(R.id.fl_sketch_container);
 
         //画板整体布局
         mSketchView = new ScaleSketchView(view.getContext(),null);
-        frameLayout.addView(mSketchView);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        frameLayout.addView(mSketchView,layoutParams);
         controlLayout = view.findViewById(R.id.controlLayout);
 
         btn_view = (Button) view.findViewById(R.id.btn_view);

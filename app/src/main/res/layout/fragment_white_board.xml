@@ -4,14 +4,15 @@
                 android:layout_height="match_parent"
                 android:background="#FFFFFF">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/fl_sketch_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/controlLayout"
-        android:background="#efeded">
+        android:background="#efeded"
+        android:gravity="center">
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/controlLayout"
