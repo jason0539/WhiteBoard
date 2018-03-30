@@ -161,11 +161,23 @@ public class SketchView extends View {
     private float mScaleY = 1;
 
     private PointF mOffset = new PointF(0, 0);
-    public void setScale(float scaleX, float scaleY) {
+    @Override
+    public void setScaleX(float scaleX) {
+        super.setScaleX(scaleX);
         mScaleX = scaleX;
+        updateCurrentStrokeRecordPathScale();
+    }
+
+    @Override
+    public void setScaleY(float scaleY) {
+        super.setScaleY(scaleY);
         mScaleY = scaleY;
+        updateCurrentStrokeRecordPathScale();
+    }
+
+    private void updateCurrentStrokeRecordPathScale() {
         if (curStrokeRecord != null && curStrokeRecord.path != null) {
-            curStrokeRecord.path.setScale(scaleX,scaleY);
+            curStrokeRecord.path.setScale(mScaleX,mScaleY);
         }
     }
 

@@ -83,9 +83,7 @@ public class ScaleSketchView extends RelativeLayout {
                 if (TouchEventUtil.isTwoFingerEvent(ev)) {
                     float newDistance = TouchEventUtil.spacingOfTwoFinger(ev);
                     float scaleFactor = newDistance / mOldDistance;
-                    scaleFactor = checkingScale(pathView.getScaleX(), scaleFactor);
-                    pathView.setScaleX(pathView.getScaleX() * scaleFactor);
-                    pathView.setScaleY(pathView.getScaleY() * scaleFactor);
+                    scaleSketchView(scaleFactor);
                     mOldDistance = newDistance;
 
 //                    checkingBorder();
@@ -100,13 +98,18 @@ public class ScaleSketchView extends RelativeLayout {
                 if (!isDragAndTranslate) {
                     return pathView.onTouchEvent(ev);
                 }
-                pathView.setScale(pathView.getScaleX(), pathView.getScaleY());
                 isDragAndTranslate = false;
                 break;
         }
 
         return true;
 
+    }
+
+    private void scaleSketchView(float scaleFactor) {
+        scaleFactor = checkingScale(pathView.getScaleX(), scaleFactor);
+        pathView.setScaleX(pathView.getScaleX() * scaleFactor);
+        pathView.setScaleY(pathView.getScaleY() * scaleFactor);
     }
 
     private float checkingScale(float scale, float scaleFactor) {
@@ -229,7 +232,6 @@ public class ScaleSketchView extends RelativeLayout {
             pathView.setScaleX(1);
             pathView.setScaleY(scale);
             pathView.getMatrix().getValues(mMatrixValus);
-            pathView.setScale(pathView.getScaleX(), pathView.getScaleY());
             pathView.setOffset(mMatrixValus[2], mMatrixValus[5]);
 
             pathView.setBackgroundByBitmap(sampleBM);
