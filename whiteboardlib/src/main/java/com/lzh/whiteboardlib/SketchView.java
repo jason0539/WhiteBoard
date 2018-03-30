@@ -161,14 +161,19 @@ public class SketchView extends View {
     private float mScaleY = 1;
 
     private PointF mOffset = new PointF(0, 0);
-    public void setScaleAndOffset(float scaleX, float scaleY,float mMatrixValus, float mMatrixValus1) {
+    public void setScale(float scaleX, float scaleY) {
         mScaleX = scaleX;
         mScaleY = scaleY;
-        mOffset.x = mMatrixValus;
-        mOffset.y = mMatrixValus1;
-        //绘制形状时path为空
         if (curStrokeRecord != null && curStrokeRecord.path != null) {
-            curStrokeRecord.path.setScaleAndOffset(mScaleX,mScaleY,mOffset.x,mOffset.y);
+            curStrokeRecord.path.setScale(scaleX,scaleY);
+        }
+    }
+
+    public void setOffset(float offsetX, float offsetY) {
+        mOffset.x = offsetX;
+        mOffset.y = offsetY;
+        if (curStrokeRecord != null && curStrokeRecord.path != null) {
+            curStrokeRecord.path.setOffset(offsetX,offsetY);
         }
     }
 

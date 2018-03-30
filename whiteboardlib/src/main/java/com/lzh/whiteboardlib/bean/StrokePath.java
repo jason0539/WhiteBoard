@@ -80,9 +80,12 @@ public class StrokePath extends Path {
         return (y - offsetY) / scaleFactorY;
     }
 
-    public void setScaleAndOffset(float scaleFactorX,float scaleFactorY, float offsetX, float offsetY) {
-        this.scaleFactorX = scaleFactorX;
-        this.scaleFactorY = scaleFactorY;
+    public void setScale(float scaleX, float scaleY) {
+        this.scaleFactorX = scaleX;
+        this.scaleFactorY = scaleY;
+    }
+
+    public void setOffset(float offsetX,float offsetY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
     }

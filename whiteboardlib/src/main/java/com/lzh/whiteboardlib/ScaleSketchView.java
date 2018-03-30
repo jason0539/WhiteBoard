@@ -51,6 +51,12 @@ public class ScaleSketchView extends RelativeLayout {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onScroll x = " + distanceX + ", y = " + distanceY);
+//            if (pathView.getEditMode() == SketchView.MODE_VIEW || e1.getPointerCount() > 1) {
+//                pathView.setX(pathView.getX() - distanceX);
+//                pathView.setY(pathView.getY() - distanceY);
+//                pathView.getMatrix().getValues(mMatrixValus);
+//                pathView.setOffset( mMatrixValus[2], mMatrixValus[5]);
+//            }
             return false;
         }
     };
@@ -101,7 +107,8 @@ public class ScaleSketchView extends RelativeLayout {
                     return pathView.onTouchEvent(ev);
                 }
                 pathView.getMatrix().getValues(mMatrixValus);
-                pathView.setScaleAndOffset(pathView.getScaleX(), pathView.getScaleY(), mMatrixValus[2], mMatrixValus[5]);
+                pathView.setScale(pathView.getScaleX(), pathView.getScaleY());
+                pathView.setOffset(mMatrixValus[2], mMatrixValus[5]);
                 isDragAndTranslate = false;
                 break;
         }
@@ -230,7 +237,8 @@ public class ScaleSketchView extends RelativeLayout {
             pathView.setScaleX(1);
             pathView.setScaleY(scale);
             pathView.getMatrix().getValues(mMatrixValus);
-            pathView.setScaleAndOffset(pathView.getScaleX(), pathView.getScaleY(),mMatrixValus[2], mMatrixValus[5]);
+            pathView.setScale(pathView.getScaleX(), pathView.getScaleY());
+            pathView.setOffset(mMatrixValus[2], mMatrixValus[5]);
 
             pathView.setBackgroundByBitmap(sampleBM);
         } else {
