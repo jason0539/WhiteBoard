@@ -4,12 +4,11 @@ import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.lzh.whiteboardlib.utils.MLog;
-
 public class SketchGestureListener {
     private GestureDetector gestureDetector;
-
-    public SketchGestureListener(Context context) {
+    private OnListener onListener;
+    public SketchGestureListener(Context context,OnListener listener) {
+        onListener = listener;
         gestureDetector = new GestureDetector(context, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -28,7 +27,9 @@ public class SketchGestureListener {
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onScroll x = " + distanceX + ", y = " + distanceY);
+                if (onListener != null) {
+                    onListener.onScroll(e1,e2,distanceX, distanceY);
+                }
                 return false;
             }
 
@@ -50,7 +51,9 @@ public class SketchGestureListener {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onDoubleTap ");
+                if (onListener != null) {
+                    onListener.onDoubleTap(e);
+                }
                 return false;
             }
 
@@ -62,7 +65,12 @@ public class SketchGestureListener {
     }
 
     public void onTouchEvent(MotionEvent event) {
+        gestureDetector.onTouchEvent(event);
+    }
 
+    public interface OnListener{
+        boolean onDoubleTap(MotionEvent e);
+        boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY);
     }
 
 }

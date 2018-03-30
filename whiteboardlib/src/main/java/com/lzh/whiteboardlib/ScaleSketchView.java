@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
 import com.lzh.whiteboardlib.utils.BitmapUtils;
+import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.utils.TouchEventUtil;
 
 /**
@@ -37,9 +38,22 @@ public class ScaleSketchView extends RelativeLayout {
                 LayoutParams.WRAP_CONTENT);
         pathView = new SketchView(getContext(), attributeSet);
         addView(pathView, pathViewParams);
-        mGestureListener = new SketchGestureListener(context);
+        mGestureListener = new SketchGestureListener(context,onListener);
     }
 
+    SketchGestureListener.OnListener onListener = new SketchGestureListener.OnListener() {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onDoubleTap ");
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onScroll x = " + distanceX + ", y = " + distanceY);
+            return false;
+        }
+    };
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
