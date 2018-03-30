@@ -20,7 +20,7 @@ import com.lzh.whiteboardlib.utils.TouchEventUtil;
 public class ScaleSketchView extends RelativeLayout {
 
     private static final float MAX_SCALE = 10.0F;
-    private static final float MIN_SCALE = 0.8f;
+    private static final float MIN_SCALE = 1f;
     private float mBorderX, mBorderY;
     private float[] mMatrixValus = new float[9];
     private SketchView pathView;
