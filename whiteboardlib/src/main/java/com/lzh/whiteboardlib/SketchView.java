@@ -189,12 +189,20 @@ public class SketchView extends View {
         }
     }
 
+    public float scaleOffsetX(float x){
+        return  (x - mOffset.x)/mScaleX;
+    }
+
+    public float scaleOffsetY(float y){
+        return  (y - mOffset.y)/mScaleY;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (editMode == MODE_STROKE) {
             //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
-            curX = (event.getX() - mOffset.x)/mScaleX;
-            curY = (event.getY() - mOffset.y)/mScaleY;
+            curX = scaleOffsetX(event.getX());
+            curY = scaleOffsetY(event.getY());
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_POINTER_DOWN:
 //                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
