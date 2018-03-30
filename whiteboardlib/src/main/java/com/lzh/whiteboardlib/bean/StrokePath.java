@@ -19,7 +19,8 @@ public class StrokePath extends Path {
     //缩放参数
     //触摸坐标绘制时要根据缩放参数做坐标转换
     //每次绘制时，可能都做过缩放，所以记录属于这次绘制的缩放参数，用于恢复坐标，保存原始坐标
-    private float scaleFactor = 1;
+    private float scaleFactorX = 1;
+    private float scaleFactorY = 1;
     private float offsetX = 0;
     private float offsetY = 0;
 
@@ -64,23 +65,24 @@ public class StrokePath extends Path {
     }
 
     private float recoverXPosition(float x) {
-        return x * scaleFactor + offsetX;
+        return x * scaleFactorX + offsetX;
     }
 
     private float recoverYPosition(float y) {
-        return y * scaleFactor + offsetY;
+        return y * scaleFactorY + offsetY;
     }
 
     private float translateXPosition(float x) {
-        return (x - offsetX) / scaleFactor;
+        return (x - offsetX) / scaleFactorX;
     }
 
     private float translateYPosition(float y) {
-        return (y - offsetY) / scaleFactor;
+        return (y - offsetY) / scaleFactorY;
     }
 
-    public void setScaleAndOffset(float scaleFactor, float offsetX, float offsetY) {
-        this.scaleFactor = scaleFactor;
+    public void setScaleAndOffset(float scaleFactorX,float scaleFactorY, float offsetX, float offsetY) {
+        this.scaleFactorX = scaleFactorX;
+        this.scaleFactorY = scaleFactorY;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
     }

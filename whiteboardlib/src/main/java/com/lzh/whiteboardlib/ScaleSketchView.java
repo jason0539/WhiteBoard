@@ -6,9 +6,11 @@ import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokeRecord;
+import com.lzh.whiteboardlib.utils.BitmapUtils;
 import com.lzh.whiteboardlib.utils.TouchEventUtil;
 
 /**
@@ -81,7 +83,7 @@ public class ScaleSketchView extends RelativeLayout {
                     return pathView.onTouchEvent(ev);
                 }
                 pathView.getMatrix().getValues(mMatrixValus);
-                pathView.setScaleAndOffset(pathView.getScaleX(), mMatrixValus[2], mMatrixValus[5]);
+                pathView.setScaleAndOffset(pathView.getScaleX(), pathView.getScaleY(), mMatrixValus[2], mMatrixValus[5]);
                 isDragAndTranslate = false;
                 break;
         }
@@ -195,7 +197,27 @@ public class ScaleSketchView extends RelativeLayout {
     }
 
     public void setBackgroundByPath(String path) {
-        pathView.setBackgroundByPath(path);
+        Bitmap sampleBM = BitmapUtils.getSampleBitMap(getContext(),path);
+        if (sampleBM != null) {
+            int bgHeight = sampleBM.getHeight();
+            int bgWidth = sampleBM.getWidth();
+            int viewHeight = pathView.getHeight();
+            int viewWidth = pathView.getWidth();
+
+            float ratio = 1f * bgHeight / bgWidth;
+            //宽度填满，高度缩放
+            int newHeight = (int) (viewWidth * ratio);
+            float scale = 1f * newHeight/viewHeight;
+
+            pathView.setScaleX(1);
+            pathView.setScaleY(scale);
+            pathView.getMatrix().getValues(mMatrixValus);
+            pathView.setScaleAndOffset(pathView.getScaleX(), pathView.getScaleY(),mMatrixValus[2], mMatrixValus[5]);
+
+            pathView.setBackgroundByBitmap(sampleBM);
+        } else {
+            Toast.makeText(getContext(), "图片文件路径有误！", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void addStrokeRecord(StrokeRecord record) {

@@ -33,7 +33,6 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.lzh.whiteboardlib.bean.SketchData;
 import com.lzh.whiteboardlib.bean.StrokePath;
@@ -158,15 +157,18 @@ public class SketchView extends View {
     }
 
     //缩放参数
-    private float mScale = 1;
+    private float mScaleX = 1;
+    private float mScaleY = 1;
+
     private PointF mOffset = new PointF(0, 0);
-    public void setScaleAndOffset(float scaleX, float mMatrixValus, float mMatrixValus1) {
-        mScale = scaleX;
+    public void setScaleAndOffset(float scaleX, float scaleY,float mMatrixValus, float mMatrixValus1) {
+        mScaleX = scaleX;
+        mScaleY = scaleY;
         mOffset.x = mMatrixValus;
         mOffset.y = mMatrixValus1;
         //绘制形状时path为空
         if (curStrokeRecord != null && curStrokeRecord.path != null) {
-            curStrokeRecord.path.setScaleAndOffset(mScale,mOffset.x,mOffset.y);
+            curStrokeRecord.path.setScaleAndOffset(mScaleX,mScaleY,mOffset.x,mOffset.y);
         }
     }
 
@@ -174,8 +176,8 @@ public class SketchView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         if (editMode == MODE_STROKE) {
             //根据缩放状态，计算触摸点在缩放后画布的对应坐标位置
-            curX = (event.getX() - mOffset.x)/mScale;
-            curY = (event.getY() - mOffset.y)/mScale;
+            curX = (event.getX() - mOffset.x)/mScaleX;
+            curY = (event.getY() - mOffset.y)/mScaleY;
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_POINTER_DOWN:
 //                    MLog.d(MLog.TAG_TOUCH,"SketchView->onTouch ACTION_POINTER_DOWN");
@@ -425,15 +427,6 @@ public class SketchView extends View {
 
     public void setOnDrawChangedListener(OnDrawChangedListener listener) {
         this.onDrawChangedListener = listener;
-    }
-
-    public void setBackgroundByPath(String path) {
-        Bitmap sampleBM = BitmapUtils.getSampleBitMap(mContext,path);
-        if (sampleBM != null) {
-            setBackgroundByBitmap(sampleBM);
-        } else {
-            Toast.makeText(mContext, "图片文件路径有误！", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void setBackgroundByBitmap(Bitmap sampleBM) {
