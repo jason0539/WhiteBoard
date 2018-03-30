@@ -29,17 +29,21 @@ public class ScaleSketchView extends RelativeLayout {
     private float mOldDistance;
     private PointF mOldPointer;
 
+    private SketchGestureListener mGestureListener;
+
     public ScaleSketchView(Context context, AttributeSet attributeSet) {
         super(context);
         RelativeLayout.LayoutParams pathViewParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         pathView = new SketchView(getContext(), attributeSet);
         addView(pathView, pathViewParams);
+        mGestureListener = new SketchGestureListener(context);
     }
 
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        mGestureListener.onTouchEvent(ev);
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
 //                MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->dispatchTouchEvent ACTION_DOWN");
