@@ -2,6 +2,7 @@ package com.lzh.whiteboardlib;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -29,6 +30,10 @@ public class ScaleSketchView extends RelativeLayout {
 
     private float mOldDistance;
 
+    private boolean isAutoScale;
+    private int doubleScale = 3;
+    private int scaleDelay = 16;
+
     private SketchGestureListener mGestureListener;
 
     public ScaleSketchView(Context context, AttributeSet attributeSet) {
@@ -44,6 +49,16 @@ public class ScaleSketchView extends RelativeLayout {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onDoubleTap ");
+            if (pathView.getEditMode() == SketchView.MODE_VIEW && !isAutoScale) {
+                float cx = e.getX();
+                float cy = e.getY();
+                if (pathView.getScaleX() < doubleScale) {
+                    post(new AutoScaleRunnable(doubleScale, cx, cy));
+                } else {
+                    post(new AutoScaleRunnable(1, cx, cy));
+                }
+                isAutoScale = true;
+            }
             return false;
         }
 
@@ -54,7 +69,7 @@ public class ScaleSketchView extends RelativeLayout {
                 pathView.setX(pathView.getX() - distanceX);
                 pathView.setY(pathView.getY() - distanceY);
                 pathView.getMatrix().getValues(mMatrixValus);
-                pathView.setOffset( mMatrixValus[2], mMatrixValus[5]);
+                pathView.setOffset( mMatrixValus[Matrix.MTRANS_X], mMatrixValus[Matrix.MTRANS_Y]);
             }
             return false;
         }
@@ -83,7 +98,8 @@ public class ScaleSketchView extends RelativeLayout {
                 if (TouchEventUtil.isTwoFingerEvent(ev)) {
                     float newDistance = TouchEventUtil.spacingOfTwoFinger(ev);
                     float scaleFactor = newDistance / mOldDistance;
-                    scaleSketchView(scaleFactor);
+                    PointF centerPoint = TouchEventUtil.middleOfTwoFinger(ev);
+                    scaleSketchView(scaleFactor, centerPoint.x, centerPoint.y);
                     mOldDistance = newDistance;
 
 //                    checkingBorder();
@@ -106,8 +122,13 @@ public class ScaleSketchView extends RelativeLayout {
 
     }
 
-    private void scaleSketchView(float scaleFactor) {
+    private void scaleSketchView(float scaleFactor,float cx,float cy) {
+        MLog.d(MLog.TAG_SCALE,"ScaleSketchView->scaleSketchView cx = " + cx + ",cy = " + cy);
         scaleFactor = checkingScale(pathView.getScaleX(), scaleFactor);
+        if (cx > -1 && cy > -1) {
+            pathView.setPivotX(cx);
+            pathView.setPivotY(cy);
+        }
         pathView.setScaleX(pathView.getScaleX() * scaleFactor);
         pathView.setScaleY(pathView.getScaleY() * scaleFactor);
     }
@@ -266,5 +287,51 @@ public class ScaleSketchView extends RelativeLayout {
 
     public SketchView getSketchView() {
         return pathView;
+    }
+
+    /**
+     * 自动放大与缩小
+     */
+    private class AutoScaleRunnable implements Runnable {
+        private float mTargetScale;
+        // 缩放的中心点
+        private float x;
+        private float y;
+
+        private final float BIGGER = 1.07f;
+        private final float SMALL = 0.93f;
+
+        private float tmpScale;
+
+        public AutoScaleRunnable(float mTargetScale, float x, float y) {
+            this.mTargetScale = mTargetScale;
+            this.x = x;
+            this.y = y;
+
+            if (pathView.getScaleX() < mTargetScale) {
+                tmpScale = BIGGER;
+            }
+            if (pathView.getScaleX() > mTargetScale) {
+                tmpScale = SMALL;
+            }
+        }
+
+        @Override
+        public void run() {
+            //进行缩放
+            scaleSketchView(tmpScale,x,y);
+
+            float currentScale = pathView.getScaleX();
+
+            if ((tmpScale >1.0f && currentScale < mTargetScale) ||(tmpScale<1.0f &&currentScale>mTargetScale)) {
+                //这个方法是重新调用run()方法
+                postDelayed(this, scaleDelay);
+            }else{
+                //设置为我们的目标值
+                float scale = mTargetScale/currentScale;
+                scaleSketchView(scale,x,y);
+                isAutoScale = false;
+            }
+        }
     }
 }
