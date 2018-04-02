@@ -66,11 +66,13 @@ public class ScaleSketchView extends RelativeLayout {
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onScroll x = " + distanceX + ", y = " + distanceY);
             if (pathView.getEditMode() == SketchView.MODE_VIEW || e2.getPointerCount() > 1) {
-//                checkingBorder();
-                pathView.setX(pathView.getX() - distanceX);
-                pathView.setY(pathView.getY() - distanceY);
+                float newX = pathView.getX() - distanceX;
+                float newY = pathView.getY() - distanceY;
+                pathView.setX(newX);
+                pathView.setY(newY);
                 pathView.getMatrix().getValues(mMatrixValus);
                 pathView.setOffset( mMatrixValus[Matrix.MTRANS_X], mMatrixValus[Matrix.MTRANS_Y]);
+                checkingBorder();
             }
             return false;
         }
@@ -160,7 +162,7 @@ public class ScaleSketchView extends RelativeLayout {
 
     private PointF offsetBorder() {
         PointF offset = new PointF(0, 0);
-        if (pathView.getScaleX() > 1) {
+        if (pathView.getScaleX() > 1 || pathView.getScaleY() > 1) {
             pathView.getMatrix().getValues(mMatrixValus);
             if (mMatrixValus[Matrix.MTRANS_X] > -(mBorderX * (pathView.getScaleX() - 1))) {
                 offset.x = -(mMatrixValus[Matrix.MTRANS_X] + mBorderX * (pathView.getScaleX() - 1));
