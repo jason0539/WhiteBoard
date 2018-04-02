@@ -165,18 +165,19 @@ public class ScaleSketchView extends RelativeLayout {
         PointF offset = new PointF(0, 0);
         if (pathView.getScaleX() > 1 || pathView.getScaleY() > 1) {
             pathView.getMatrix().getValues(mMatrixValus);
+            //左边界
             if (mMatrixValus[Matrix.MTRANS_X] > -(mBorderX * (pathView.getScaleX() - 1))) {
                 offset.x = -(mMatrixValus[Matrix.MTRANS_X] + mBorderX * (pathView.getScaleX() - 1));
             }
-
+            //右边界
             if (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1) < getWidth()) {
                 offset.x = getWidth() - (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1));
             }
-
+            //上边界
             if (mMatrixValus[Matrix.MTRANS_Y] > -(mBorderY * (pathView.getScaleY() - 1))) {
                 offset.y = -(mMatrixValus[Matrix.MTRANS_Y] + mBorderY * (pathView.getScaleY() - 1));
             }
-
+            //下边界
             if (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1) < getHeight()) {
                 offset.y = getHeight() - (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1));
             }
