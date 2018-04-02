@@ -99,7 +99,7 @@ public class ScaleSketchView extends RelativeLayout {
                     float newDistance = TouchEventUtil.spacingOfTwoFinger(ev);
                     float scaleFactor = newDistance / mOldDistance;
                     PointF centerPoint = TouchEventUtil.middleOfTwoFinger(ev);
-                    scaleSketchView(scaleFactor, centerPoint.x, centerPoint.y);
+                    scaleSketchView(scaleFactor, -1,-1);
                     mOldDistance = newDistance;
 
 //                    checkingBorder();
