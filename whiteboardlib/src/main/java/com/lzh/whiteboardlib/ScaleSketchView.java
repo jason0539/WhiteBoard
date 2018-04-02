@@ -72,14 +72,23 @@ public class ScaleSketchView extends RelativeLayout {
                 pathView.getMatrix().getValues(mMatrixValus);
                 pathView.setOffset( mMatrixValus[Matrix.MTRANS_X], mMatrixValus[Matrix.MTRANS_Y]);
                 checkingBorder();
+                return false;
             }
+            return false;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//            fling((int)velocityX, (int)velocityY);
             return false;
         }
     };
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        mGestureListener.onTouchEvent(ev);
+        if (mGestureListener.onTouchEvent(ev)) {
+            return true;
+        }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
 //                MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->dispatchTouchEvent ACTION_DOWN");

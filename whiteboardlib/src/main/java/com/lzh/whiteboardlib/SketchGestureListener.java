@@ -28,7 +28,7 @@ public class SketchGestureListener {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (onListener != null) {
-                    onListener.onScroll(e1,e2,distanceX, distanceY);
+                    return onListener.onScroll(e1,e2,distanceX, distanceY);
                 }
                 return false;
             }
@@ -40,6 +40,9 @@ public class SketchGestureListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (onListener != null) {
+                    return onListener.onFling(e1,e2,velocityX, velocityY);
+                }
                 return false;
             }
         });
@@ -52,7 +55,7 @@ public class SketchGestureListener {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 if (onListener != null) {
-                    onListener.onDoubleTap(e);
+                    return onListener.onDoubleTap(e);
                 }
                 return false;
             }
@@ -64,13 +67,14 @@ public class SketchGestureListener {
         });
     }
 
-    public void onTouchEvent(MotionEvent event) {
-        gestureDetector.onTouchEvent(event);
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 
     public interface OnListener{
         boolean onDoubleTap(MotionEvent e);
         boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY);
+        boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY);
     }
 
 }
