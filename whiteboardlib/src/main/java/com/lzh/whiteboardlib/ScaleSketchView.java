@@ -66,6 +66,7 @@ public class ScaleSketchView extends RelativeLayout {
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->onScroll x = " + distanceX + ", y = " + distanceY);
             if (pathView.getEditMode() == SketchView.MODE_VIEW || e2.getPointerCount() > 1) {
+//                checkingBorder();
                 pathView.setX(pathView.getX() - distanceX);
                 pathView.setY(pathView.getY() - distanceY);
                 pathView.getMatrix().getValues(mMatrixValus);
@@ -101,8 +102,6 @@ public class ScaleSketchView extends RelativeLayout {
                     PointF centerPoint = TouchEventUtil.middleOfTwoFinger(ev);
                     scaleSketchView(scaleFactor, -1,-1);
                     mOldDistance = newDistance;
-
-//                    checkingBorder();
                 }else if (TouchEventUtil.fingersOfEvent(ev) > 2) {
                     isDragAndTranslate = false;
                 }
@@ -150,6 +149,7 @@ public class ScaleSketchView extends RelativeLayout {
 
     private void checkingBorder() {
         PointF offset = offsetBorder();
+        MLog.d(MLog.TAG_TOUCH,"ScaleSketchView->checkingBorder x = " + offset.x + ",y = " + offset.y);
         pathView.setX(pathView.getX() + offset.x);
         pathView.setY(pathView.getY() + offset.y);
         if (pathView.getScaleX() == 1) {
@@ -162,21 +162,20 @@ public class ScaleSketchView extends RelativeLayout {
         PointF offset = new PointF(0, 0);
         if (pathView.getScaleX() > 1) {
             pathView.getMatrix().getValues(mMatrixValus);
-            if (mMatrixValus[2] > -(mBorderX * (pathView.getScaleX() - 1))) {
-                offset.x = -(mMatrixValus[2] + mBorderX * (pathView.getScaleX() - 1));
+            if (mMatrixValus[Matrix.MTRANS_X] > -(mBorderX * (pathView.getScaleX() - 1))) {
+                offset.x = -(mMatrixValus[Matrix.MTRANS_X] + mBorderX * (pathView.getScaleX() - 1));
             }
 
-            if (mMatrixValus[2] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1) < getWidth()) {
-                offset.x = getWidth() - (mMatrixValus[2] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1));
+            if (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1) < getWidth()) {
+                offset.x = getWidth() - (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1));
             }
 
-            if (mMatrixValus[5] > -(mBorderY * (pathView.getScaleY() - 1))) {
-                System.out.println("offsetY:" + mMatrixValus[5] + " borderY:" + mBorderY + " scale:" + getScaleY() + " scaleOffset:" + mBorderY * (getScaleY() - 1));
-                offset.y = -(mMatrixValus[5] + mBorderY * (pathView.getScaleY() - 1));
+            if (mMatrixValus[Matrix.MTRANS_Y] > -(mBorderY * (pathView.getScaleY() - 1))) {
+                offset.y = -(mMatrixValus[Matrix.MTRANS_Y] + mBorderY * (pathView.getScaleY() - 1));
             }
 
-            if (mMatrixValus[5] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1) < getHeight()) {
-                offset.y = getHeight() - (mMatrixValus[5] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1));
+            if (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1) < getHeight()) {
+                offset.y = getHeight() - (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1));
             }
         }
 
