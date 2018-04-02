@@ -151,14 +151,14 @@ public class ScaleSketchView extends RelativeLayout {
     }
 
     private void checkingBorder() {
-        PointF offset = offsetBorder();
-        MLog.d(MLog.TAG_TOUCH,"ScaleSketchView->checkingBorder x = " + offset.x + ",y = " + offset.y);
-        pathView.setX(pathView.getX() + offset.x);
-        pathView.setY(pathView.getY() + offset.y);
-        if (pathView.getScaleX() == 1) {
-            pathView.setX(0);
-            pathView.setY(0);
-        }
+//        PointF offset = offsetBorder();
+//        MLog.d(MLog.TAG_TOUCH,"ScaleSketchView->checkingBorder x = " + offset.x + ",y = " + offset.y);
+//        pathView.setX(pathView.getX() + offset.x);
+//        pathView.setY(pathView.getY() + offset.y);
+//        if (pathView.getScaleX() == 1) {
+//            pathView.setX(0);
+//            pathView.setY(0);
+//        }
     }
 
     private PointF offsetBorder() {
