@@ -15,6 +15,7 @@ public class MLog {
     public static final String TAG_DRAW = "TAG_DRAW";
     public static final String TAG_TOUCH = "TAG_TOUCH";
     public static final String TAG_SCALE = "TAG_SCALE";
+    public static final String TAG_OFFSET = "TAG_OFFSET";
 
     private static boolean isDebug() {
         return DEBUG;
