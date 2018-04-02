@@ -132,6 +132,7 @@ public class ScaleSketchView extends RelativeLayout {
         }
         pathView.setScaleX(pathView.getScaleX() * scaleFactor);
         pathView.setScaleY(pathView.getScaleY() * scaleFactor);
+        checkingBorder();
     }
 
     private float checkingScale(float scale, float scaleFactor) {
