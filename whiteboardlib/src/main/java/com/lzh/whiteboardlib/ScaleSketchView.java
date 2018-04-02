@@ -23,7 +23,6 @@ public class ScaleSketchView extends RelativeLayout {
 
     private static final float MAX_SCALE = 5f;
     private static final float MIN_SCALE = 1f;
-    private float mBorderX, mBorderY;
     private float[] mMatrixValus = new float[9];
     private SketchView pathView;
     private boolean isDragAndTranslate;
@@ -160,30 +159,31 @@ public class ScaleSketchView extends RelativeLayout {
 
     private PointF offsetBorder() {
         PointF offset = new PointF(0, 0);
-        if (pathView.getScaleX() > 1 || pathView.getScaleY() > 1) {
+        if (pathView.getScaleX() >= 1 || pathView.getScaleY() >= 1) {
             MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder 当前缩放x="+pathView.getScaleX()+",y="+pathView.getScaleY());
             MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder pathView.getWidth()="+pathView.getWidth()+",pathView.getWidth()*pathView.getScaleX()="+pathView.getScaleX()*pathView.getWidth());
             MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder pathView.getHeight()="+pathView.getHeight()+",pathView.getHeight()*pathView.getScaleY()="+pathView.getScaleY()*pathView.getHeight());
+            MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder getWidth = " + getWidth() + ",getHeight()=" + getHeight());
             pathView.getMatrix().getValues(mMatrixValus);
             MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder 当前位移x="+mMatrixValus[Matrix.MTRANS_X]+",y="+mMatrixValus[Matrix.MTRANS_Y]);
             //左边界
-            if (mMatrixValus[Matrix.MTRANS_X] > -(mBorderX * (pathView.getScaleX() - 1))) {
-                offset.x = -(mMatrixValus[Matrix.MTRANS_X] + mBorderX * (pathView.getScaleX() - 1));
+            if (mMatrixValus[Matrix.MTRANS_X] > 0) {
+                offset.x = -(mMatrixValus[Matrix.MTRANS_X]);
                 MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder 到达左边界，纠正offset.x="+offset.x);
             }
             //右边界
-            if (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1) < getWidth()) {
-                offset.x = getWidth() - (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX() - mBorderX * (pathView.getScaleX() - 1));
+            if (mMatrixValus[Matrix.MTRANS_X] < -(pathView.getWidth() * pathView.getScaleX() - getWidth())) {
+                offset.x = getWidth() - (mMatrixValus[Matrix.MTRANS_X] + pathView.getWidth() * pathView.getScaleX());
                 MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder 到达右边界，纠正offset.x="+offset.x);
             }
             //上边界
-            if (mMatrixValus[Matrix.MTRANS_Y] > -(mBorderY * (pathView.getScaleY() - 1))) {
-                offset.y = -(mMatrixValus[Matrix.MTRANS_Y] + mBorderY * (pathView.getScaleY() - 1));
+            if (mMatrixValus[Matrix.MTRANS_Y] > 0) {
+                offset.y = -(mMatrixValus[Matrix.MTRANS_Y]);
                 MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder 到达上边界，纠正offset.y="+offset.y);
             }
             //下边界
-            if (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1) < getHeight()) {
-                offset.y = getHeight() - (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY() - mBorderY * (pathView.getScaleY() - 1));
+            if (mMatrixValus[Matrix.MTRANS_Y] < -(pathView.getHeight() * pathView.getScaleY() - getHeight())) {
+                offset.y = getHeight() - (mMatrixValus[Matrix.MTRANS_Y] + pathView.getHeight() * pathView.getScaleY());
                 MLog.d(MLog.TAG_OFFSET,"ScaleSketchView->offsetBorder 到达下边界，纠正offset.y="+offset.y);
             }
         }
