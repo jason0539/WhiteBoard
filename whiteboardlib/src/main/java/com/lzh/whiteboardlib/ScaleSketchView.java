@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 import android.widget.Toast;
 
 import com.lzh.whiteboardlib.bean.SketchData;
@@ -29,6 +30,10 @@ public class ScaleSketchView extends RelativeLayout {
     private SketchView pathView;
     private boolean isDragAndTranslate;
 
+    float flingStartX = 0;
+    float flingStartY = 0;
+    Scroller mScroller;
+
     private float mOldDistance;
 
     private boolean isAutoScale;
@@ -45,6 +50,30 @@ public class ScaleSketchView extends RelativeLayout {
         addView(pathView, pathViewParams);
         mGestureListener = new SketchGestureListener(context,onListener);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mScroller = new Scroller(getContext());
+    }
+
+    public void fling( int velocityX, int velocityY){
+        float minx = -(pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2);
+        float maxX = pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2;
+        float minY = -(pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2);
+        float maxY = pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2;
+        MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling minX = " + minx + ",maxX = " + maxX + ", minY = " + minY + ",maxY = " + maxY);
+        //startX为开始时x位移坐标，startY为开始时y位移坐标
+        MLog.d(MLog.TAG_FLING, "ScaleSketchView->fling startX = " + flingStartX + ",startY = " + flingStartY);
+        mScroller.fling((int) flingStartX, (int) flingStartY, velocityX, velocityY, (int) minx, (int) (maxX), (int) minY, (int) maxY);
+        MLog.d(MLog.TAG_FLING,"ScaleSketchView->computeScroll finalX = " + mScroller.getFinalX() + ",finalY = " + mScroller.getFinalY());
+        invalidate();
+    }
+
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
+            MLog.d(MLog.TAG_FLING,"ScaleSketchView->computeScroll currX = " + mScroller.getCurrX() + ",currY = " + mScroller.getCurrY());
+            setOffset(mScroller.getCurrX(), mScroller.getCurrY());
+            invalidate();
+        }
+        super.computeScroll();
     }
 
     SketchGestureListener.OnListener onListener = new SketchGestureListener.OnListener() {
@@ -66,15 +95,13 @@ public class ScaleSketchView extends RelativeLayout {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            MLog.d(MLog.TAG_OFFSET, "ScaleSketchView->onScroll x = " + distanceX + ", y = " + distanceY);
             if (pathView.getEditMode() == SketchView.MODE_VIEW || e2.getPointerCount() > 1) {
                 float newX = pathView.getX() - distanceX;
                 float newY = pathView.getY() - distanceY;
-                pathView.setX(newX);
-                pathView.setY(newY);
-                pathView.getMatrix().getValues(mMatrixValus);
-                pathView.setOffset( mMatrixValus[Matrix.MTRANS_X], mMatrixValus[Matrix.MTRANS_Y]);
-                checkingBorder();
+                flingStartX = newX;
+                flingStartY = newY;
+                MLog.d(MLog.TAG_FLING,"ScaleSketchView->onScroll newX = " + newX + ",newY = " + newY);
+                setOffset(newX, newY);
                 return false;
             }
             return false;
@@ -82,10 +109,20 @@ public class ScaleSketchView extends RelativeLayout {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//            fling((int)velocityX, (int)velocityY);
+            if (pathView.getEditMode() == SketchView.MODE_VIEW || TouchEventUtil.isTwoFingerEvent(e2)) {
+                fling((int)velocityX, (int)velocityY);
+            }
             return false;
         }
     };
+
+    private void setOffset(float newX, float newY) {
+        pathView.setX(newX);
+        pathView.setY(newY);
+        pathView.getMatrix().getValues(mMatrixValus);
+        pathView.setOffset( mMatrixValus[Matrix.MTRANS_X], mMatrixValus[Matrix.MTRANS_Y]);
+//        checkingBorder();
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -94,6 +131,9 @@ public class ScaleSketchView extends RelativeLayout {
         }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                if (!mScroller.isFinished()) {
+                    mScroller.abortAnimation();
+                }
 //                MLog.d(MLog.TAG_TOUCH, "ScaleSketchView->dispatchTouchEvent ACTION_DOWN");
                 return pathView.onTouchEvent(ev);
             case MotionEvent.ACTION_POINTER_DOWN:
