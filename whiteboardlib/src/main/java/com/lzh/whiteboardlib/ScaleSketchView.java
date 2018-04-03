@@ -54,10 +54,10 @@ public class ScaleSketchView extends RelativeLayout {
     }
 
     public void fling( int velocityX, int velocityY){
-        float minx = -(pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2);
-        float maxX = pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2;
-        float minY = -(pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2);
-        float maxY = pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2;
+        float minx = -(pathView.getWidth() * pathView.getScaleX() - getWidth());
+        float maxX = 0;
+        float minY = -(pathView.getHeight() * pathView.getScaleY() - getHeight());
+        float maxY = 0;
         MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling minX = " + minx + ",maxX = " + maxX + ", minY = " + minY + ",maxY = " + maxY);
         //startX为开始时x位移坐标，startY为开始时y位移坐标
         MLog.d(MLog.TAG_FLING, "ScaleSketchView->fling startX = " + flingStartX + ",startY = " + flingStartY);
@@ -306,6 +306,12 @@ public class ScaleSketchView extends RelativeLayout {
             int viewWidth = pathView.getWidth();
 
             float ratio = 1f * bgHeight / bgWidth;
+            if (ratio > 1) {
+                pathView.setPivotY(0);
+                pathView.setPivotX(0);
+            }else {
+                //默认使用中心坐标
+            }
             //宽度填满，高度缩放
             int newHeight = (int) (viewWidth * ratio);
             float scale = 1f * newHeight/viewHeight;
