@@ -7,8 +7,8 @@ import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+import android.widget.OverScroller;
 import android.widget.RelativeLayout;
-import android.widget.Scroller;
 import android.widget.Toast;
 
 import com.lzh.whiteboardlib.bean.SketchData;
@@ -32,7 +32,7 @@ public class ScaleSketchView extends RelativeLayout {
 
     float flingStartX = 0;
     float flingStartY = 0;
-    Scroller mScroller;
+    OverScroller mScroller;
 
     private float mOldDistance;
 
@@ -50,7 +50,7 @@ public class ScaleSketchView extends RelativeLayout {
         addView(pathView, pathViewParams);
         mGestureListener = new SketchGestureListener(context,onListener);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mScroller = new Scroller(getContext());
+        mScroller = new OverScroller(getContext());
     }
 
     public void fling( int velocityX, int velocityY){
