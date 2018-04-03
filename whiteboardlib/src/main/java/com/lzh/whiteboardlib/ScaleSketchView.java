@@ -341,6 +341,7 @@ public class ScaleSketchView extends RelativeLayout {
             pathView.setScaleY(scale);
             pathView.getMatrix().getValues(mMatrixValus);
             pathView.setOffset(mMatrixValus[2], mMatrixValus[5]);
+            checkingBorder();
 
             pathView.setBackgroundByBitmap(sampleBM);
         } else {
