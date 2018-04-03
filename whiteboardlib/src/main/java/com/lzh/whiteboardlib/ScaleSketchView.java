@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class ScaleSketchView extends RelativeLayout {
     private static final float MAX_SCALE = 5f;
     private static final float MIN_SCALE = 1f;
     private float[] mMatrixValus = new float[9];
+    private int mTouchSlop;
     private SketchView pathView;
     private boolean isDragAndTranslate;
 
@@ -42,6 +44,7 @@ public class ScaleSketchView extends RelativeLayout {
         pathView = new SketchView(getContext(), attributeSet);
         addView(pathView, pathViewParams);
         mGestureListener = new SketchGestureListener(context,onListener);
+        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     SketchGestureListener.OnListener onListener = new SketchGestureListener.OnListener() {
