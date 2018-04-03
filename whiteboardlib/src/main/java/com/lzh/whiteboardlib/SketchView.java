@@ -461,6 +461,14 @@ public class SketchView extends View {
         invalidate();
     }
 
+    public float getScaleWidth(){
+        return getWidth() * getScaleX();
+    }
+
+    public float getScaleHeight(){
+        return getHeight() * getScaleY();
+    }
+
     public int getEditMode() {
         return editMode;
     }

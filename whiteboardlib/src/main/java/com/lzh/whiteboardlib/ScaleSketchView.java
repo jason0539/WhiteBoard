@@ -56,19 +56,20 @@ public class ScaleSketchView extends RelativeLayout {
 
     public void fling( int velocityX, int velocityY){
         //左上角缩放计算
-        float minx = -(pathView.getWidth() * pathView.getScaleX() - getWidth());
+        float minx = -(pathView.getScaleWidth() - getWidth());
         float maxX = 0;
-        float minY = -(pathView.getHeight() * pathView.getScaleY() - getHeight());
+        float minY = -(pathView.getScaleHeight() - getHeight());
         float maxY = 0;
         if (ratio < 1) {
-            MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling 扁平图片");
             //扁平图片依然以图片中心为重点，中心点缩放计算
-            minx = -(pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2);
-            maxX = pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2;
-            if (pathView.getHeight() * pathView.getScaleY() > getHeight()) {
+            minx = -(pathView.getScaleWidth() / 2 - getWidth() / 2);
+            maxX = pathView.getScaleWidth() / 2 - getWidth() / 2;
+            if (pathView.getScaleHeight() > getHeight()) {
+                MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling 扁平图片高度足够，用中心点计算Y");
                 minY = -(pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2);
                 maxY = pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2;
             }else {
+                MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling 扁平图片高度不足，y写死");
                 //高度没有填满屏幕计算
                 minY = 0;
                 maxY = minY;
@@ -325,9 +326,11 @@ public class ScaleSketchView extends RelativeLayout {
 
             ratio = 1f * bgHeight / bgWidth;
             if (ratio > 1) {
+                MLog.d(MLog.TAG_FLING,"ScaleSketchView->setBackgroundByPath 竖直图片");
                 pathView.setPivotY(0);
                 pathView.setPivotX(0);
             }else {
+                MLog.d(MLog.TAG_FLING,"ScaleSketchView->setBackgroundByPath 扁平图片");
                 //默认使用中心坐标
             }
             //宽度填满，高度缩放
