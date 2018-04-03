@@ -33,6 +33,7 @@ public class ScaleSketchView extends RelativeLayout {
     float flingStartX = 0;
     float flingStartY = 0;
     OverScroller mScroller;
+    float ratio;
 
     private float mOldDistance;
 
@@ -54,10 +55,27 @@ public class ScaleSketchView extends RelativeLayout {
     }
 
     public void fling( int velocityX, int velocityY){
+        //左上角缩放计算
         float minx = -(pathView.getWidth() * pathView.getScaleX() - getWidth());
         float maxX = 0;
         float minY = -(pathView.getHeight() * pathView.getScaleY() - getHeight());
         float maxY = 0;
+        if (ratio < 1) {
+            MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling 扁平图片");
+            //扁平图片依然以图片中心为重点，中心点缩放计算
+            minx = -(pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2);
+            maxX = pathView.getWidth() * pathView.getScaleX() / 2 - getWidth() / 2;
+            if (pathView.getHeight() * pathView.getScaleY() > getHeight()) {
+                minY = -(pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2);
+                maxY = pathView.getHeight() * pathView.getScaleY()/2 - getHeight()/2;
+            }else {
+                //高度没有填满屏幕计算
+                minY = 0;
+                maxY = minY;
+            }
+        }else {
+            MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling 不是扁平图片");
+        }
         MLog.d(MLog.TAG_FLING,"ScaleSketchView->fling minX = " + minx + ",maxX = " + maxX + ", minY = " + minY + ",maxY = " + maxY);
         //startX为开始时x位移坐标，startY为开始时y位移坐标
         MLog.d(MLog.TAG_FLING, "ScaleSketchView->fling startX = " + flingStartX + ",startY = " + flingStartY);
@@ -183,7 +201,7 @@ public class ScaleSketchView extends RelativeLayout {
         }
         pathView.setScaleX(pathView.getScaleX() * scaleFactor);
         pathView.setScaleY(pathView.getScaleY() * scaleFactor);
-        checkingBorder();
+//        checkingBorder();
     }
 
     private float checkingScale(float scale, float scaleFactor) {
@@ -305,7 +323,7 @@ public class ScaleSketchView extends RelativeLayout {
             int viewHeight = pathView.getHeight();
             int viewWidth = pathView.getWidth();
 
-            float ratio = 1f * bgHeight / bgWidth;
+            ratio = 1f * bgHeight / bgWidth;
             if (ratio > 1) {
                 pathView.setPivotY(0);
                 pathView.setPivotX(0);
