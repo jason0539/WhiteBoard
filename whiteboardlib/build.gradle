@@ -22,8 +22,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.alibaba:fastjson:1.2.46'
-    compile 'com.alibaba:fastjson:1.1.68.android'
+    compile 'com.alibaba:fastjson:1.1.55.android'
 }
 apply from: 'https://raw.githubusercontent.com/venshine/gradle-bintray-upload/master/bintray.gradle'
