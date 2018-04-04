@@ -48,7 +48,7 @@ public class ScaleSketchView extends RelativeLayout {
     public ScaleSketchView(Context context, AttributeSet attributeSet) {
         super(context);
         RelativeLayout.LayoutParams pathViewParams = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+                LayoutParams.MATCH_PARENT);
         pathView = new SketchView(getContext(), attributeSet);
         addView(pathView, pathViewParams);
         mGestureListener = new SketchGestureListener(context,onListener);
