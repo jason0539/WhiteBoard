@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -44,6 +45,9 @@ public class ScaleSketchView extends RelativeLayout {
     private int scaleDelay = 16;
 
     private SketchGestureListener mGestureListener;
+
+    private String currBgPath;
+    private boolean hasMeasureFinished = false;
 
     public ScaleSketchView(Context context, AttributeSet attributeSet) {
         super(context);
@@ -318,13 +322,27 @@ public class ScaleSketchView extends RelativeLayout {
         return pathView.getStrokeType();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        hasMeasureFinished = true;
+        if (!TextUtils.isEmpty(currBgPath)) {
+            setBackgroundByPath(currBgPath);
+            currBgPath = null;
+        }
+    }
+
     public void setBackgroundByPath(String path) {
+        if (!hasMeasureFinished) {
+            currBgPath = path;
+            return;
+        }
         Bitmap sampleBM = BitmapUtils.getSampleBitMap(getContext(),path);
         if (sampleBM != null) {
             int bgHeight = sampleBM.getHeight();
             int bgWidth = sampleBM.getWidth();
-            int viewHeight = pathView.getHeight();
-            int viewWidth = pathView.getWidth();
+            int viewHeight = pathView.getMeasuredHeight();
+            int viewWidth = pathView.getMeasuredWidth();
 
             ratio = 1f * bgHeight / bgWidth;
             if (ratio > 1) {
