@@ -401,21 +401,23 @@ public class SketchView extends View {
     /*
      * 删除一笔
      */
-    public void undo(){
+    public List<StrokeRecord> undo(){
         List<StrokeRecord> undo = mSketchPainter.undo();
         if (undo.size()>0) {
             deleteRecord(undo.get(0).userid, undo.get(0).id,true);
         }
+        return undo;
     }
 
     /*
      * 撤销
      */
-    public void redo() {
+    public List<StrokeRecord> redo() {
         List<StrokeRecord> redo = mSketchPainter.redo();
         for (StrokeRecord strokeRecord : redo) {
             notifyDrawListener(strokeRecord);
         }
+        return redo;
     }
 
     public int getRedoCount() {

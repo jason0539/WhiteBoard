@@ -17,6 +17,8 @@ import com.lzh.whiteboardlib.utils.BitmapUtils;
 import com.lzh.whiteboardlib.utils.MLog;
 import com.lzh.whiteboardlib.utils.TouchEventUtil;
 
+import java.util.List;
+
 /**
  * Created by liuzhenhui on 2018/3/16.
  */
@@ -292,12 +294,12 @@ public class ScaleSketchView extends RelativeLayout {
         pathView.erase(manual);
     }
 
-    public void redo() {
-        pathView.redo();
+    public List<StrokeRecord> redo() {
+        return pathView.redo();
     }
 
-    public void undo() {
-        pathView.undo();
+    public List<StrokeRecord> undo() {
+        return pathView.undo();
     }
 
     public void setStrokeType(int strokeType) {
