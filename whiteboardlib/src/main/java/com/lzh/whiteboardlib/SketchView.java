@@ -56,7 +56,7 @@ import static com.lzh.whiteboardlib.bean.StrokeRecord.STROKE_TYPE_TEXT;
 
 public class SketchView extends View {
 
-    public static final long USER_ID = UUID.randomUUID().hashCode();
+    public static long USER_ID = UUID.randomUUID().hashCode();
 
     public static final int MODE_VIEW = 0;//浏览模式
     public static final int MODE_STROKE = 1;//绘制模式
